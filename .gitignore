@@ -1,0 +1,10 @@
+/HemApp-ejb/build/
+/HemApp-war/build/
+/HemApp-ejb/dist/
+/HemApp-war/dist/
+/build/
+/dist/
+/HemApp-ejb/nbproject/private/
+/HemApp-war/nbproject/private/
+/nbproject/private/
+/dist/
