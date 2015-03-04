@@ -1,0 +1,28 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "_http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+    <h:head>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta content='text/html; charset=UTF-8' http-equiv="Content-Type"/>
+        <title>HemApp</title>
+    </h:head>
+    <h:body onload="PF('idleDialog').show();">
+        <p:dialog header="Session timeout!" rendered="#{LoginController.invalidated}" onShow="#{LoginController.invalidateSessionContinue()}" resizable="false" widgetVar="idleDialog" modal="true" closable="false" closeOnEscape="false">
+            <h:form>
+                <a href="/HemApp-war/4dm1n1s7r470r/adminlogin.xhtml">Please login!</a>
+            </h:form>
+        </p:dialog>
+        <h:form id="page">
+            <p:menubar>
+                <p:menuitem value="Betegek menedzselése" url="" icon="ui-icon-wrench" />
+                <p:menuitem value="Adminok menedzselése" url="" icon="ui-icon-wrench"/>
+                <p:menuitem value="Orvosok menedzselése" url="" icon="ui-icon-wrench"/>
+                <p:menuitem value="Jelszómódosítás" url="" icon="ui-icon-wrench"/>
+                <p:menuitem value="Kilépés" icon="ui-icon-power" action="#{AdminController.logout()}"/>
+            </p:menubar>
+        </h:form>
+    </h:body>
+</html>
