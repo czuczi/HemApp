@@ -6,6 +6,7 @@
 package facade;
 
 import entity.Admin;
+import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -28,4 +29,7 @@ public class AdminFacade extends AbstractFacade<Admin> {
         super(Admin.class);
     }
     
+    public List<Admin> getByFelhNev(String felhNev) {
+        return em.createNamedQuery("Admin.findByFelhnev").setParameter("felhnev", felhNev).getResultList();
+    }
 }
