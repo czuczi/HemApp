@@ -1,3 +1,6 @@
 jdbc:mysql://localhost:3306/hemapp?zeroDateTimeBehavior=convertToNull
 
-insert into admin VALUES ('admin', 'e10adc3949ba59abbe56e057f20f883e');
+insert into admin VALUES ('admin', 'e10adc3949ba59abbe56e057f20f883e', 'Teszt', 'Elek', NULL, NULL);
+
+UUID uuid = UUID.randomUUID();
+        this.id = uuid.toString().replaceAll("-", "");
