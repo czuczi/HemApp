@@ -6,12 +6,12 @@
             <name>HemApp-war</name>
             <minimum-ant-version>1.6.5</minimum-ant-version>
             <web-module-libraries>
-                <library dirs="100">
-                    <file>${reference.HemApp-ejb.dist}</file>
+                <library dirs="200">
+                    <file>${file.reference.primefaces-5.1.jar}</file>
                     <path-in-war>WEB-INF/lib</path-in-war>
                 </library>
-                <library dirs="200">
-                    <file>${libs.Primefaces.classpath}</file>
+                <library dirs="100">
+                    <file>${reference.HemApp-ejb.dist}</file>
                     <path-in-war>WEB-INF/lib</path-in-war>
                 </library>
             </web-module-libraries>
