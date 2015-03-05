@@ -10,15 +10,15 @@
         <title>HemApp</title>
     </h:head>
     <h:body onload="PF('idleDialog').show();">
-        <p:dialog header="Session timeout!" rendered="#{LoginController.invalidated}" onShow="#{LoginController.invalidateSessionContinue()}" resizable="false" widgetVar="idleDialog" modal="true" closable="false" closeOnEscape="false">
+        <p:dialog header="A munkamenet időtúllépés miatt megszakadt!" rendered="#{LoginController.invalidated}" onShow="#{LoginController.invalidateSessionContinue()}" resizable="false" widgetVar="idleDialog" modal="true" closable="false" closeOnEscape="false">
             <h:form>
-                <a href="/HemApp-war/4dm1n1s7r470r/adminlogin.xhtml">Please login!</a>
+                <a href="/HemApp-war/4dm1n1s7r470r/adminlogin.xhtml">Bejelentkezés!</a>
             </h:form>
         </p:dialog>
         <h:form id="page">
             <p:menubar>
                 <p:menuitem value="Betegek menedzselése" url="" icon="ui-icon-wrench" />
-                <p:menuitem value="Adminok menedzselése" url="" icon="ui-icon-wrench"/>
+                <p:menuitem value="Adminok menedzselése" url="handleAdmin.xhtml" icon="ui-icon-wrench"/>
                 <p:menuitem value="Orvosok menedzselése" url="" icon="ui-icon-wrench"/>
                 <p:menuitem value="Jelszómódosítás" url="" icon="ui-icon-wrench"/>
                 <p:menuitem value="Kilépés" icon="ui-icon-power" action="#{AdminController.logout()}"/>

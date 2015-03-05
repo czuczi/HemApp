@@ -1,0 +1,86 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui" >
+    <h:head>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta content='text/html; charset=UTF-8' http-equiv="Content-Type"/>
+        <title>HemApp</title>
+    </h:head>
+    <body onload="#{LoginController.pageRightChecker()}" style="background-color: darkgray; font-size: 0.8em">
+        <p:dialog header="A munkamenet időtúllépés miatt megszakadt!" rendered="#{LoginController.invalidated}" onShow="#{LoginController.invalidateSessionContinue()}" resizable="false" widgetVar="idleDialog" modal="true" closable="false" closeOnEscape="false">
+            <h:form>
+                <a href="/HemApp-war/4dm1n1s7r470r/adminlogin.xhtml">Bejelentkezés!</a>
+            </h:form>
+        </p:dialog>
+        <p:growl id="message" life="4000" showDetail="true" />
+        <h:form id="page">
+            <p:menubar>
+                <p:menuitem value="Betegek menedzselése" url="" icon="ui-icon-wrench" />
+                <p:menuitem value="Adminok menedzselése" url="handleAdmin.xhtml" icon="ui-icon-wrench"/>
+                <p:menuitem value="Orvosok menedzselése" url="" icon="ui-icon-wrench"/>
+                <p:menuitem value="Jelszómódosítás" url="" icon="ui-icon-wrench"/>
+                <p:menuitem value="Kilépés" icon="ui-icon-power" action="#{AdminController.logout()}"/>
+            </p:menubar>
+        </h:form>
+        <h:form id="tableForm">
+            <p:panel header="Adminisztrátorok">
+                <p:dataTable id="table" widgetVar="tableWidget" value="#{AdminController.allAdmin}" var="admin" 
+                             rowKey="#{admin.felhnev}" disabledSelection="false" selectionMode="single" 
+                             selection="#{AdminController.selectedAdmin}" paginator="true" 
+                             filteredValue="#{AdminController.filteredAdmin}" rows="25">
+                    <p:ajax event="rowSelect" listener="#{AdminController.selectAdmin}" />
+                    <p:column headerText="Felhasználónév" filterBy="#{admin.felhnev}" filterMatchMode="contains">
+                        #{admin.felhnev}
+                    </p:column>
+                    <p:column headerText="Vezetéknév" filterBy="#{admin.vezeteknev}" filterMatchMode="contains">
+                        #{admin.vezeteknev}
+                    </p:column>
+                    <p:column headerText="Keresztnév" filterBy="#{admin.keresztnev}" filterMatchMode="contains">
+                        #{admin.keresztnev}
+                    </p:column>
+                    <p:column headerText="E-mail" filterBy="#{admin.email}" filterMatchMode="contains">
+                        #{admin.email}
+                    </p:column>
+                    <p:column headerText="Telefonszám" filterBy="#{admin.telefon}" filterMatchMode="contains">
+                        #{admin.telefon}
+                    </p:column>
+                </p:dataTable>
+                <center>
+                    <p:commandButton value="Új" onclick="PF('newAdminDialogWidget').show()" update=":message" />
+                    <p:commandButton value="Törlés" actionListener="#{AdminController.deleteAdmin()}" ajax="true" update=":message" />
+                </center>
+            </p:panel>
+        </h:form>
+        <h:form id="newAdminForm">
+            <p:dialog id="newAdminDialog" widgetVar="newAdminDialogWidget" resizable="false"
+                header="Új Adminisztrátor">
+                <p:panelGrid columns="2">
+                    <p:outputLabel value="Felhasználónév: "/>
+                    <p:inputText value="#{AdminController.felhNev}" required="true" requiredMessage="Kérem adja meg a felhasználónevet!" />
+                    <p:outputLabel value="Jelszó: " />
+                    <p:password id="Password" title="Default: start123" value="#{AdminController.jelszo}" match="Password_again" label="Jelszó" widgetVar="pwd1var" />
+                    <p:outputLabel value="Jelszó újra: "/>
+                    <p:password id="Password_again" title="Default: start123" label="Jelszó újra" widgetVar="pwd2var"/>
+                    <p:outputLabel value="Vezetéknév: "/>
+                    <p:inputText value="#{AdminController.vezeteknev}" required="true" requiredMessage="Kérem adja meg a vezetéknevet!" />
+                    <p:outputLabel value="Keresztnév: "/>
+                    <p:inputText value="#{AdminController.keresztnev}" required="true" requiredMessage="Kérem adja meg a keresztnevet!" />
+                    <p:outputLabel value="E-mail: "/>
+                    <p:inputText value="#{AdminController.email}" validatorMessage="Az e-mail cím formátuma nem megfelelő!">
+                        <f:validateRegex pattern="^$|^[_A-Za-z0-9-\+]+(\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\.[ A-Za-z0-9-]+)*(\.[A-Za-z]{2,})$"/>
+                    </p:inputText>
+                    <p:outputLabel value="Telefonszám: "/>
+                    <p:inputText value="#{AdminController.telefon}" validatorMessage="Kérem csak számokat adjon meg!">
+                        <f:validateRegex pattern="^[0-9]*$"/>
+                    </p:inputText>
+                </p:panelGrid>
+                <center>
+                    <p:commandButton value="Adminisztrátor hozzáadása" actionListener="#{AdminController.createAdmin()}" ajax="true" update=":message" />
+                </center>
+            </p:dialog>
+        </h:form>
+    </body>
+</html>

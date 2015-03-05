@@ -10,28 +10,28 @@
         <title>HemApp</title>
     </h:head>
     <h:body onload="PF('idleDialog').show();">
-        <p:dialog header="Session timeout!" rendered="#{LoginController.invalidated}" onShow="#{LoginController.invalidateSessionContinue()}" resizable="false" widgetVar="idleDialog" modal="true" closable="false" closeOnEscape="false">
+        <p:dialog header="A munkamenet időtúllépés miatt megszakadt!" rendered="#{LoginController.invalidated}" onShow="#{LoginController.invalidateSessionContinue()}" resizable="false" widgetVar="idleDialog" modal="true" closable="false" closeOnEscape="false">
             <h:form>
-                <a href="/HemApp-war/4dm1n1s7r470r/adminlogin.xhtml">Please login!</a>
+                <a href="/HemApp-war/4dm1n1s7r470r/adminlogin.xhtml">Bejelentkezés!</a>
             </h:form>
         </p:dialog>
         <h:form id="loginform">
             <p:layout id="full" fullPage="true">
-                <p:layoutUnit id="lu1" position="north" size="6%">
-                    <p:outputLabel value="Supported browsers: Google Chrome/Mozilla Firefox" style="font-size: 0.7em; float: left"/>
-                </p:layoutUnit>
-                <p:layoutUnit id="lu2" position="center" size="88%">
-                    <p:panelGrid columns="2">
-                        <p:outputLabel value="Username"/>
-                        <p:inputText id="username" value="#{LoginController.felhNev}"/>
-                        <p:outputLabel value="Password:"/>
-                        <p:password value="#{LoginController.jelszo}"/>
-                    </p:panelGrid>
-                    <br/>
-                    <p:commandButton value="Please login" action="#{LoginController.authenticate()}"/>
-                </p:layoutUnit>
-                <p:layoutUnit id="lu3" position="south" size="6%">
-                    <p:outputLabel value="Supported browsers: Google Chrome/Mozilla Firefox" style="font-size: 0.7em; float: left"/>
+                <p:layoutUnit id="lu" position="center" size="100%">
+                    <div style="vertical-align: middle; display: table; height: 100%; width: 100%;">
+                        <div style="align: center; vertical-align: middle; display: table-cell;">
+                            <center>
+                                <p:panelGrid columns="2">
+                                    <p:outputLabel value="Felhasználónév"/>
+                                    <p:inputText id="username" value="#{LoginController.felhNev}"/>
+                                    <p:outputLabel value="Jelszó:"/>
+                                    <p:password value="#{LoginController.jelszo}"/>
+                                </p:panelGrid>
+                                <br/>
+                                <p:commandButton value="Bejelentkezés" action="#{LoginController.authenticate()}"/>
+                            </center>
+                        </div>
+                    </div>
                 </p:layoutUnit>
             </p:layout>
         </h:form>

@@ -29,6 +29,23 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "Admin.findByFelhnev", query = "SELECT a FROM Admin a WHERE a.felhnev = :felhnev"),
     @NamedQuery(name = "Admin.findByJelszo", query = "SELECT a FROM Admin a WHERE a.jelszo = :jelszo")})
 public class Admin implements Serializable {
+    @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 100)
+    @Column(name = "Vezeteknev")
+    private String vezeteknev;
+    @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 100)
+    @Column(name = "Keresztnev")
+    private String keresztnev;
+    // @Pattern(regexp="[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?", message="Invalid email")//if the field contains email address consider using this annotation to enforce field validation
+    @Size(max = 150)
+    @Column(name = "Email")
+    private String email;
+    @Size(max = 20)
+    @Column(name = "Telefon")
+    private String telefon;
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
@@ -43,8 +60,11 @@ public class Admin implements Serializable {
     public Admin() {
     }
 
-    public Admin(String felhnev) {
+    public Admin(String felhnev, String jelszo, String vezeteknev, String keresztnev) {
         this.felhnev = felhnev;
+        this.jelszo = jelszo;
+        this.vezeteknev = vezeteknev;
+        this.keresztnev = keresztnev;
     }
 
     public String getFelhnev() {
@@ -86,6 +106,38 @@ public class Admin implements Serializable {
     @Override
     public String toString() {
         return "entity.Admin[ felhnev=" + felhnev + " ]";
+    }
+
+    public String getVezeteknev() {
+        return vezeteknev;
+    }
+
+    public void setVezeteknev(String vezeteknev) {
+        this.vezeteknev = vezeteknev;
+    }
+
+    public String getKeresztnev() {
+        return keresztnev;
+    }
+
+    public void setKeresztnev(String keresztnev) {
+        this.keresztnev = keresztnev;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getTelefon() {
+        return telefon;
+    }
+
+    public void setTelefon(String telefon) {
+        this.telefon = telefon;
     }
     
 }
