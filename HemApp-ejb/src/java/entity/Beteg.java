@@ -7,6 +7,7 @@ package entity;
 
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.UUID;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -100,8 +101,8 @@ public class Beteg implements Serializable {
         this.id = id;
     }
 
-    public Beteg(String id, String felhnev, String jelszo, String vezeteknev, String keresztnev, int taj) {
-        this.id = id;
+    public Beteg(String felhnev, String jelszo, String vezeteknev, String keresztnev, int taj) {
+        this.id = UUID.randomUUID().toString().replaceAll("-", "");
         this.felhnev = felhnev;
         this.jelszo = jelszo;
         this.vezeteknev = vezeteknev;

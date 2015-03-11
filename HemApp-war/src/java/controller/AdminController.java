@@ -78,6 +78,13 @@ public class AdminController implements Serializable {
     }
 
     public void createAdmin() {
+        for (Admin admin : allAdmin) {
+            if (admin.getFelhnev().equals(felhNev)) {
+                FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "WARNING", "A felhasználónév foglalt!");
+                FacesContext.getCurrentInstance().addMessage(null, msg);
+                return;
+            }
+        }
         Admin newAdmin;
         if (!jelszo.equals("")) {
             newAdmin = new Admin(felhNev, loginController.getMD5String(jelszo), vezeteknev, keresztnev);
@@ -89,8 +96,12 @@ public class AdminController implements Serializable {
             }
         } else {
             newAdmin = new Admin(felhNev, loginController.getMD5String("start123"), vezeteknev, keresztnev);
-            newAdmin.setEmail(email);
-            newAdmin.setTelefon(telefon);
+            if (!email.isEmpty()) {
+                newAdmin.setEmail(email);
+            }
+            if (!telefon.isEmpty()) {
+                newAdmin.setTelefon(telefon);
+            }
         }
         adminFacade.create(newAdmin);
         init();
@@ -110,6 +121,14 @@ public class AdminController implements Serializable {
     }
 
     public void editAdmin() {
+        for (Admin admin : allAdmin) {
+            if (admin.getFelhnev().equals(felhNevForChange) && !selectedAdmin.getFelhnev().equals(felhNevForChange)) {
+                FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "WARNING", "A felhasználónév foglalt!");
+                FacesContext.getCurrentInstance().addMessage(null, msg);
+                return;
+            }
+        }
+        
         adminFacade.remove(selectedAdmin);
         selectedAdmin.setFelhnev(felhNevForChange);
         selectedAdmin.setVezeteknev(vezeteknevForChange);

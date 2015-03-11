@@ -18,7 +18,7 @@
         <p:growl id="message" life="4000" showDetail="true" />
         <h:form id="page">
             <p:menubar>
-                <p:menuitem value="Betegek menedzselése" url="" icon="ui-icon-wrench" />
+                <p:menuitem value="Betegek menedzselése" url="handlePatient.xhtml" icon="ui-icon-wrench" />
                 <p:menuitem value="Adminok menedzselése" url="handleAdmin.xhtml" icon="ui-icon-wrench"/>
                 <p:menuitem value="Orvosok menedzselése" url="handleDoctor.xhtml" icon="ui-icon-wrench"/>
                 <p:menuitem value="Jelszómódosítás" url="changePassword.xhtml" icon="ui-icon-wrench"/>
@@ -57,12 +57,12 @@
         </h:form>
         <h:form id="newOrvosForm">
             <p:dialog id="newOrvosDialog" widgetVar="newOrvosDialogWidget" resizable="false"
-                header="Új Orvos">
+                header="Új orvos">
                 <p:panelGrid columns="2">
                     <p:outputLabel value="Felhasználónév: "/>
                     <p:inputText value="#{OrvosController.felhNev}" required="true" requiredMessage="Kérem adja meg a felhasználónevet!" />
                     <p:outputLabel value="Jelszó: " />
-                    <p:password id="Password" title="Default: start123" value="#{OrvosController.jelszo}" match="Password_again" label="Jelszó" widgetVar="pwd1var" />
+                    <p:password id="Password" title="Default: start123" value="#{OrvosController.jelszo}" match="Password_again" validatorMessage="A két jelszónak meg kell egyeznie" label="Jelszó" widgetVar="pwd1var" />
                     <p:outputLabel value="Jelszó újra: "/>
                     <p:password id="Password_again" title="Default: start123" label="Jelszó újra" widgetVar="pwd2var"/>
                     <p:outputLabel value="Vezetéknév: "/>
@@ -85,7 +85,7 @@
         </h:form>
         <h:form id="editOrvosForm">
             <p:dialog id="editOrvosDialog" widgetVar="editOrvosDialogWidget" resizable="false"
-                header="Orvos módosítása">
+                header="Orvos szerkesztése">
                 <p:panelGrid columns="2">
                     <p:outputLabel value="Felhasználónév: "/>
                     <p:inputText value="#{OrvosController.felhNevForChange}" required="true" requiredMessage="Kérem adja meg a felhasználónevet!" />
@@ -103,7 +103,7 @@
                     </p:inputText>
                 </p:panelGrid>
                 <center>
-                    <p:commandButton value="Orvos módosítása" actionListener="#{OrvosController.editOrvos()}" ajax="true" update=":message" />
+                    <p:commandButton value="Orvos szerkesztése" actionListener="#{OrvosController.editOrvos()}" ajax="true" update=":message" />
                 </center>
             </p:dialog>
         </h:form>

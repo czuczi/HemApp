@@ -7,6 +7,7 @@ package controller;
 
 import entity.Orvos;
 import facade.OrvosFacade;
+import java.io.Serializable;
 import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
@@ -25,7 +26,7 @@ import org.primefaces.event.SelectEvent;
 @Stateless
 @ManagedBean(name = "OrvosController")
 @SessionScoped
-public class OrvosController {
+public class OrvosController implements Serializable{
 
     @EJB
     private LoginController loginController;
@@ -69,6 +70,13 @@ public class OrvosController {
     }
 
     public void createOrvos() {
+        for (Orvos orvos : allOrvos) {
+            if (orvos.getFelhnev().equals(felhNev)) {
+                FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "WARNING", "A felhasználónév foglalt!");
+                FacesContext.getCurrentInstance().addMessage(null, msg);
+                return;
+            }
+        }
         Orvos newOrvos;
         if (!jelszo.equals("")) {
             newOrvos = new Orvos(felhNev, loginController.getMD5String(jelszo), vezeteknev, keresztnev);
@@ -80,8 +88,12 @@ public class OrvosController {
             }
         } else {
             newOrvos = new Orvos(felhNev, loginController.getMD5String("start123"), vezeteknev, keresztnev);
-            newOrvos.setEmail(email);
-            newOrvos.setTelefon(telefon);
+            if (!email.isEmpty()) {
+                newOrvos.setEmail(email);
+            }
+            if (!telefon.isEmpty()) {
+                newOrvos.setTelefon(telefon);
+            }
         }
         orvosFacade.create(newOrvos);
         init();
@@ -101,6 +113,13 @@ public class OrvosController {
     }
     
     public void editOrvos() {
+        for (Orvos orvos : allOrvos) {
+            if (orvos.getFelhnev().equals(felhNevForChange) && !selectedOrvos.getFelhnev().equals(felhNevForChange)) {
+                FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "WARNING", "A felhasználónév foglalt!");
+                FacesContext.getCurrentInstance().addMessage(null, msg);
+                return;
+            }
+        }
         if (selectedOrvos == null) {
             FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "WARNING", "Kérem válasszon orvost!");
             FacesContext.getCurrentInstance().addMessage(null, msg);

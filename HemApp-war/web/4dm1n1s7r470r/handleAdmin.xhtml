@@ -18,7 +18,7 @@
         <p:growl id="message" life="4000" showDetail="true" />
         <h:form id="page">
             <p:menubar>
-                <p:menuitem value="Betegek menedzselése" url="" icon="ui-icon-wrench" />
+                <p:menuitem value="Betegek menedzselése" url="handlePatient.xhtml" icon="ui-icon-wrench" />
                 <p:menuitem value="Adminok menedzselése" url="handleAdmin.xhtml" icon="ui-icon-wrench"/>
                 <p:menuitem value="Orvosok menedzselése" url="handleDoctor.xhtml" icon="ui-icon-wrench"/>
                 <p:menuitem value="Jelszómódosítás" url="changePassword.xhtml" icon="ui-icon-wrench"/>
@@ -62,7 +62,7 @@
                     <p:outputLabel value="Felhasználónév: "/>
                     <p:inputText value="#{AdminController.felhNev}" required="true" requiredMessage="Kérem adja meg a felhasználónevet!" />
                     <p:outputLabel value="Jelszó: " />
-                    <p:password id="Password" title="Default: start123" value="#{AdminController.jelszo}" match="Password_again" label="Jelszó" widgetVar="pwd1var" />
+                    <p:password id="Password" title="Default: start123" value="#{AdminController.jelszo}" validatorMessage="A két jelszónak meg kell egyeznie" match="Password_again" label="Jelszó" widgetVar="pwd1var" />
                     <p:outputLabel value="Jelszó újra: "/>
                     <p:password id="Password_again" title="Default: start123" label="Jelszó újra" widgetVar="pwd2var"/>
                     <p:outputLabel value="Vezetéknév: "/>
