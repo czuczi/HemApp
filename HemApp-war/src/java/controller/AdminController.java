@@ -32,14 +32,19 @@ import org.primefaces.event.SelectEvent;
 public class AdminController implements Serializable {
 
     @EJB
+    private LoginController loginController;
+
+    @EJB
     private AdminFacade adminFacade;
 
     private List<Admin> allAdmin;
     private List<Admin> filteredAdmin;
 
     private Admin selectedAdmin;
+
     private String felhNev = "";
     private String felhNevForChange = "";
+    private String felhNevForChangePW = "";
     private String jelszo = "";
     private String oldPassword = "";
     private String newPassword = "";
@@ -64,12 +69,18 @@ public class AdminController implements Serializable {
 
     public void selectAdmin(SelectEvent selectEvent) {
         selectedAdmin = (Admin) selectEvent.getObject();
+        felhNevForChange = selectedAdmin.getFelhnev();
+        vezeteknevForChange = selectedAdmin.getVezeteknev();
+        keresztnevForChange = selectedAdmin.getKeresztnev();
+        emailForChange = selectedAdmin.getEmail();
+        telefonForChange = selectedAdmin.getTelefon();
+        RequestContext.getCurrentInstance().update("editAdminForm");
     }
 
     public void createAdmin() {
         Admin newAdmin;
         if (!jelszo.equals("")) {
-            newAdmin = new Admin(felhNev, getMD5String(jelszo), vezeteknev, keresztnev);
+            newAdmin = new Admin(felhNev, loginController.getMD5String(jelszo), vezeteknev, keresztnev);
             if (!email.isEmpty()) {
                 newAdmin.setEmail(email);
             }
@@ -77,7 +88,7 @@ public class AdminController implements Serializable {
                 newAdmin.setTelefon(telefon);
             }
         } else {
-            newAdmin = new Admin(felhNev, getMD5String("start123"), vezeteknev, keresztnev);
+            newAdmin = new Admin(felhNev, loginController.getMD5String("start123"), vezeteknev, keresztnev);
             newAdmin.setEmail(email);
             newAdmin.setTelefon(telefon);
         }
@@ -87,6 +98,37 @@ public class AdminController implements Serializable {
         email = telefon = null;
         RequestContext.getCurrentInstance().update("tableForm");
         RequestContext.getCurrentInstance().update("newAdminForm");
+    }
+
+    public void editAdminShow() {
+        if (selectedAdmin == null) {
+            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "WARNING", "Kérem válasszon adminisztrátort!");
+            FacesContext.getCurrentInstance().addMessage(null, msg);
+            return;
+        }
+        RequestContext.getCurrentInstance().execute("PF('editAdminDialogWidget').show()");
+    }
+
+    public void editAdmin() {
+        adminFacade.remove(selectedAdmin);
+        selectedAdmin.setFelhnev(felhNevForChange);
+        selectedAdmin.setVezeteknev(vezeteknevForChange);
+        selectedAdmin.setKeresztnev(keresztnevForChange);
+        selectedAdmin.setEmail(emailForChange);
+        selectedAdmin.setTelefon(telefonForChange);
+
+        if (emailForChange.isEmpty()) {
+            selectedAdmin.setEmail(null);
+        }
+
+        if (telefonForChange.isEmpty()) {
+            selectedAdmin.setTelefon(null);
+        }
+
+        adminFacade.create(selectedAdmin);
+        init();
+        RequestContext.getCurrentInstance().update("tableForm");
+        RequestContext.getCurrentInstance().update("editAdminForm");
     }
 
     public void deleteAdmin() {
@@ -102,11 +144,11 @@ public class AdminController implements Serializable {
     }
 
     public void changePassword() {
-        Admin aktAdmin = adminFacade.getByFelhNev(felhNevForChange).get(0);
-        if (getMD5String(oldPassword).equals(aktAdmin.getJelszo())) {
-            aktAdmin.setJelszo(getMD5String(newPassword));
+        Admin aktAdmin = adminFacade.getByFelhNev(felhNevForChangePW).get(0);
+        if (loginController.getMD5String(oldPassword).equals(aktAdmin.getJelszo())) {
+            aktAdmin.setJelszo(loginController.getMD5String(newPassword));
             adminFacade.edit(aktAdmin);
-            felhNevForChange = oldPassword = newPassword = "";
+            felhNevForChangePW = oldPassword = newPassword = "";
             RequestContext.getCurrentInstance().update("passwordForm");
             FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "INFO", "Siker!");
             FacesContext.getCurrentInstance().addMessage(null, msg);
@@ -114,19 +156,6 @@ public class AdminController implements Serializable {
             FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "WARNING", "A régi jelszó nem megfelelő!");
             FacesContext.getCurrentInstance().addMessage(null, msg);
         }
-    }
-
-    public String getMD5String(String password) {
-        String pwd = "";
-        try {
-            MessageDigest m = MessageDigest.getInstance("MD5");
-            m.update(password.getBytes(), 0, password.length());
-            pwd = new BigInteger(1, m.digest()).toString(16);
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        }
-
-        return pwd;
     }
 
     public List<Admin> getAllAdmin() {
@@ -255,6 +284,14 @@ public class AdminController implements Serializable {
 
     public void setTelefonForChange(String telefonForChange) {
         this.telefonForChange = telefonForChange;
+    }
+
+    public String getFelhNevForChangePW() {
+        return felhNevForChangePW;
+    }
+
+    public void setFelhNevForChangePW(String felhNevForChangePW) {
+        this.felhNevForChangePW = felhNevForChangePW;
     }
 
 }

@@ -1,0 +1,111 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui" >
+    <h:head>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta content='text/html; charset=UTF-8' http-equiv="Content-Type"/>
+        <title>HemApp</title>
+    </h:head>
+    <body onload="#{LoginController.pageRightChecker()}" style="background-color: darkgray; font-size: 0.8em">
+        <p:dialog header="A munkamenet időtúllépés miatt megszakadt!" rendered="#{LoginController.invalidated}" onShow="#{LoginController.invalidateSessionContinue()}" resizable="false" widgetVar="idleDialog" modal="true" closable="false" closeOnEscape="false">
+            <h:form>
+                <a href="/HemApp-war/4dm1n1s7r470r/adminlogin.xhtml">Bejelentkezés!</a>
+            </h:form>
+        </p:dialog>
+        <p:growl id="message" life="4000" showDetail="true" />
+        <h:form id="page">
+            <p:menubar>
+                <p:menuitem value="Betegek menedzselése" url="" icon="ui-icon-wrench" />
+                <p:menuitem value="Adminok menedzselése" url="handleAdmin.xhtml" icon="ui-icon-wrench"/>
+                <p:menuitem value="Orvosok menedzselése" url="handleDoctor.xhtml" icon="ui-icon-wrench"/>
+                <p:menuitem value="Jelszómódosítás" url="changePassword.xhtml" icon="ui-icon-wrench"/>
+                <p:menuitem value="Kilépés" icon="ui-icon-power" action="#{AdminController.logout()}"/>
+            </p:menubar>
+        </h:form>
+        <h:form id="tableForm">
+            <p:panel header="Orvosok">
+                <p:dataTable id="table" widgetVar="tableWidget" value="#{OrvosController.allOrvos}" var="orvos" 
+                             rowKey="#{orvos.felhnev}" disabledSelection="false" selectionMode="single" 
+                             selection="#{OrvosController.selectedOrvos}" paginator="true" 
+                             filteredValue="#{OrvosController.filteredOrvos}" rows="25">
+                    <p:ajax event="rowSelect" listener="#{OrvosController.selectOrvos}" />
+                    <p:column headerText="Felhasználónév" filterBy="#{orvos.felhnev}" filterMatchMode="contains">
+                        #{orvos.felhnev}
+                    </p:column>
+                    <p:column headerText="Vezetéknév" filterBy="#{orvos.vezeteknev}" filterMatchMode="contains">
+                        #{orvos.vezeteknev}
+                    </p:column>
+                    <p:column headerText="Keresztnév" filterBy="#{orvos.keresztnev}" filterMatchMode="contains">
+                        #{orvos.keresztnev}
+                    </p:column>
+                    <p:column headerText="E-mail" filterBy="#{orvos.email}" filterMatchMode="contains">
+                        #{orvos.email}
+                    </p:column>
+                    <p:column headerText="Telefonszám" filterBy="#{orvos.telefon}" filterMatchMode="contains">
+                        #{orvos.telefon}
+                    </p:column>
+                </p:dataTable>
+                <center>
+                    <p:commandButton value="Új" onclick="PF('newOrvosDialogWidget').show()" update=":message" />
+                    <p:commandButton value="Módosítás" actionListener="#{OrvosController.editOrvosShow()}" update=":message" />
+                    <p:commandButton value="Törlés" actionListener="#{OrvosController.deleteOrvos()}" ajax="true" update=":message" />
+                </center>
+            </p:panel>
+        </h:form>
+        <h:form id="newOrvosForm">
+            <p:dialog id="newOrvosDialog" widgetVar="newOrvosDialogWidget" resizable="false"
+                header="Új Orvos">
+                <p:panelGrid columns="2">
+                    <p:outputLabel value="Felhasználónév: "/>
+                    <p:inputText value="#{OrvosController.felhNev}" required="true" requiredMessage="Kérem adja meg a felhasználónevet!" />
+                    <p:outputLabel value="Jelszó: " />
+                    <p:password id="Password" title="Default: start123" value="#{OrvosController.jelszo}" match="Password_again" label="Jelszó" widgetVar="pwd1var" />
+                    <p:outputLabel value="Jelszó újra: "/>
+                    <p:password id="Password_again" title="Default: start123" label="Jelszó újra" widgetVar="pwd2var"/>
+                    <p:outputLabel value="Vezetéknév: "/>
+                    <p:inputText value="#{OrvosController.vezeteknev}" required="true" requiredMessage="Kérem adja meg a vezetéknevet!" />
+                    <p:outputLabel value="Keresztnév: "/>
+                    <p:inputText value="#{OrvosController.keresztnev}" required="true" requiredMessage="Kérem adja meg a keresztnevet!" />
+                    <p:outputLabel value="E-mail: "/>
+                    <p:inputText value="#{OrvosController.email}" validatorMessage="Az e-mail cím formátuma nem megfelelő!">
+                        <f:validateRegex pattern="^$|^[_A-Za-z0-9-\+]+(\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\.[ A-Za-z0-9-]+)*(\.[A-Za-z]{2,})$"/>
+                    </p:inputText>
+                    <p:outputLabel value="Telefonszám: "/>
+                    <p:inputText value="#{OrvosController.telefon}" validatorMessage="Kérem csak számokat adjon meg!">
+                        <f:validateRegex pattern="^[0-9]*$"/>
+                    </p:inputText>
+                </p:panelGrid>
+                <center>
+                    <p:commandButton value="Orvos hozzáadása" actionListener="#{OrvosController.createOrvos()}" ajax="true" update=":message" />
+                </center>
+            </p:dialog>
+        </h:form>
+        <h:form id="editOrvosForm">
+            <p:dialog id="editOrvosDialog" widgetVar="editOrvosDialogWidget" resizable="false"
+                header="Orvos módosítása">
+                <p:panelGrid columns="2">
+                    <p:outputLabel value="Felhasználónév: "/>
+                    <p:inputText value="#{OrvosController.felhNevForChange}" required="true" requiredMessage="Kérem adja meg a felhasználónevet!" />
+                    <p:outputLabel value="Vezetéknév: "/>
+                    <p:inputText value="#{OrvosController.vezeteknevForChange}" required="true" requiredMessage="Kérem adja meg a vezetéknevet!" />
+                    <p:outputLabel value="Keresztnév: "/>
+                    <p:inputText value="#{OrvosController.keresztnevForChange}" required="true" requiredMessage="Kérem adja meg a keresztnevet!" />
+                    <p:outputLabel value="E-mail: "/>
+                    <p:inputText value="#{OrvosController.emailForChange}" validatorMessage="Az e-mail cím formátuma nem megfelelő!">
+                        <f:validateRegex pattern="^$|^[_A-Za-z0-9-\+]+(\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\.[ A-Za-z0-9-]+)*(\.[A-Za-z]{2,})$"/>
+                    </p:inputText>
+                    <p:outputLabel value="Telefonszám: "/>
+                    <p:inputText value="#{OrvosController.telefonForChange}" validatorMessage="Kérem csak számokat adjon meg!">
+                        <f:validateRegex pattern="^[0-9]*$"/>
+                    </p:inputText>
+                </p:panelGrid>
+                <center>
+                    <p:commandButton value="Orvos módosítása" actionListener="#{OrvosController.editOrvos()}" ajax="true" update=":message" />
+                </center>
+            </p:dialog>
+        </h:form>
+    </body>
+</html>

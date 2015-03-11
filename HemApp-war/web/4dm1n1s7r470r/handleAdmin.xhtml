@@ -20,8 +20,8 @@
             <p:menubar>
                 <p:menuitem value="Betegek menedzselése" url="" icon="ui-icon-wrench" />
                 <p:menuitem value="Adminok menedzselése" url="handleAdmin.xhtml" icon="ui-icon-wrench"/>
-                <p:menuitem value="Orvosok menedzselése" url="" icon="ui-icon-wrench"/>
-                <p:menuitem value="Jelszómódosítás" url="" icon="ui-icon-wrench"/>
+                <p:menuitem value="Orvosok menedzselése" url="handleDoctor.xhtml" icon="ui-icon-wrench"/>
+                <p:menuitem value="Jelszómódosítás" url="changePassword.xhtml" icon="ui-icon-wrench"/>
                 <p:menuitem value="Kilépés" icon="ui-icon-power" action="#{AdminController.logout()}"/>
             </p:menubar>
         </h:form>
@@ -50,6 +50,7 @@
                 </p:dataTable>
                 <center>
                     <p:commandButton value="Új" onclick="PF('newAdminDialogWidget').show()" update=":message" />
+                    <p:commandButton value="Módosítás" actionListener="#{AdminController.editAdminShow()}" update=":message" />
                     <p:commandButton value="Törlés" actionListener="#{AdminController.deleteAdmin()}" ajax="true" update=":message" />
                 </center>
             </p:panel>
@@ -79,6 +80,30 @@
                 </p:panelGrid>
                 <center>
                     <p:commandButton value="Adminisztrátor hozzáadása" actionListener="#{AdminController.createAdmin()}" ajax="true" update=":message" />
+                </center>
+            </p:dialog>
+        </h:form>
+        <h:form id="editAdminForm">
+            <p:dialog id="editAdminDialog" widgetVar="editAdminDialogWidget" resizable="false"
+                header="Adminisztrátor módosítása">
+                <p:panelGrid columns="2">
+                    <p:outputLabel value="Felhasználónév: "/>
+                    <p:inputText value="#{AdminController.felhNevForChange}" required="true" requiredMessage="Kérem adja meg a felhasználónevet!" />
+                    <p:outputLabel value="Vezetéknév: "/>
+                    <p:inputText value="#{AdminController.vezeteknevForChange}" required="true" requiredMessage="Kérem adja meg a vezetéknevet!" />
+                    <p:outputLabel value="Keresztnév: "/>
+                    <p:inputText value="#{AdminController.keresztnevForChange}" required="true" requiredMessage="Kérem adja meg a keresztnevet!" />
+                    <p:outputLabel value="E-mail: "/>
+                    <p:inputText value="#{AdminController.emailForChange}" validatorMessage="Az e-mail cím formátuma nem megfelelő!">
+                        <f:validateRegex pattern="^$|^[_A-Za-z0-9-\+]+(\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\.[ A-Za-z0-9-]+)*(\.[A-Za-z]{2,})$"/>
+                    </p:inputText>
+                    <p:outputLabel value="Telefonszám: "/>
+                    <p:inputText value="#{AdminController.telefonForChange}" validatorMessage="Kérem csak számokat adjon meg!">
+                        <f:validateRegex pattern="^[0-9]*$"/>
+                    </p:inputText>
+                </p:panelGrid>
+                <center>
+                    <p:commandButton value="Adminisztrátor módosítása" actionListener="#{AdminController.editAdmin()}" ajax="true" update=":message" />
                 </center>
             </p:dialog>
         </h:form>

@@ -7,6 +7,7 @@ package entity;
 
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.UUID;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -78,14 +79,13 @@ public class Orvos implements Serializable {
     private Collection<Beteg> betegCollection;
 
     public Orvos() {
+        this.id = UUID.randomUUID().toString().replaceAll("-", "");
     }
 
-    public Orvos(String id) {
-        this.id = id;
-    }
-
-    public Orvos(String id, String felhnev, String jelszo, String vezeteknev, String keresztnev) {
-        this.id = id;
+    
+    
+    public Orvos(String felhnev, String jelszo, String vezeteknev, String keresztnev) {
+        this.id = UUID.randomUUID().toString().replaceAll("-", "");
         this.felhnev = felhnev;
         this.jelszo = jelszo;
         this.vezeteknev = vezeteknev;

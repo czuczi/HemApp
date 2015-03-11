@@ -9,7 +9,7 @@
         <meta content='text/html; charset=UTF-8' http-equiv="Content-Type"/>
         <title>HemApp</title>
     </h:head>
-    <h:body onload="PF('idleDialog').show();">
+    <h:body onload="PF('idleDialog').show();" style="background-color: darkgray; font-size: 0.8em">
         <p:dialog header="A munkamenet időtúllépés miatt megszakadt!" rendered="#{LoginController.invalidated}" onShow="#{LoginController.invalidateSessionContinue()}" resizable="false" widgetVar="idleDialog" modal="true" closable="false" closeOnEscape="false">
             <h:form>
                 <a href="/HemApp-war/4dm1n1s7r470r/adminlogin.xhtml">Bejelentkezés!</a>
@@ -19,8 +19,8 @@
             <p:menubar>
                 <p:menuitem value="Betegek menedzselése" url="" icon="ui-icon-wrench" />
                 <p:menuitem value="Adminok menedzselése" url="handleAdmin.xhtml" icon="ui-icon-wrench"/>
-                <p:menuitem value="Orvosok menedzselése" url="" icon="ui-icon-wrench"/>
-                <p:menuitem value="Jelszómódosítás" url="" icon="ui-icon-wrench"/>
+                <p:menuitem value="Orvosok menedzselése" url="handleDoctor.xhtml" icon="ui-icon-wrench"/>
+                <p:menuitem value="Jelszómódosítás" url="changePassword.xhtml" icon="ui-icon-wrench"/>
                 <p:menuitem value="Kilépés" icon="ui-icon-power" action="#{AdminController.logout()}"/>
             </p:menubar>
         </h:form>
