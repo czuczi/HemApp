@@ -9,7 +9,6 @@ import entity.Beteg;
 import entity.Orvos;
 import facade.BetegFacade;
 import facade.OrvosFacade;
-import javax.inject.Named;
 import java.io.Serializable;
 import java.util.Comparator;
 import java.util.LinkedList;

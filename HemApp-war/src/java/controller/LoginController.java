@@ -2,6 +2,8 @@ package controller;
 
 import facade.AdminFacade;
 import entity.Admin;
+import entity.Beteg;
+import facade.BetegFacade;
 import java.io.IOException;
 import java.io.Serializable;
 import java.math.BigInteger;
@@ -24,26 +26,41 @@ public class LoginController implements Serializable {
 
     @EJB
     private AdminFacade adminFacade;
+    @EJB
+    private BetegFacade betegFacade;
 
+    private Admin admin;
+    private Beteg beteg;
+    
     private String felhNev;
     private String jelszo;
     private boolean invalidated = false;
     private int timeOut = 1200000;
 
-    public void pageRightChecker() {
-        if (jelszo == null) {
+    public void pageRightCheckerForAdmin() {
+        if (adminFacade.getByFelhNev(felhNev).isEmpty()) {
             try {
-                FacesContext.getCurrentInstance().getExternalContext().redirect(FacesContext.getCurrentInstance().getExternalContext().getRequestContextPath() + "/careermap.xhtml");
+                FacesContext.getCurrentInstance().getExternalContext().redirect(FacesContext.getCurrentInstance().getExternalContext().getRequestContextPath() + "/4dm1n1s7r470r/adminlogin.xhtml");
+            } catch (IOException e) {
+            }
+        }
+    }
+    
+        public void pageRightCheckerForBeteg() {
+        if (betegFacade.getByFelhNev(felhNev).isEmpty()) {
+            try {
+                FacesContext.getCurrentInstance().getExternalContext().redirect(FacesContext.getCurrentInstance().getExternalContext().getRequestContextPath() + "/beteg/beteglogin.xhtml");
             } catch (IOException e) {
             }
         }
     }
 
-    public String authenticate() {
+
+    public String authenticateForAdmin() {
         if (adminFacade.getByFelhNev(felhNev).isEmpty()) {
             return "/4dm1n1s7r470r/adminlogin?faces-redirect=true";
         }
-        Admin admin = adminFacade.getByFelhNev(felhNev).get(0);
+        admin = adminFacade.getByFelhNev(felhNev).get(0);
         if (admin != null) {
             if (admin.getJelszo().equals(getMD5String(jelszo))) {
                 return "/4dm1n1s7r470r/admin?faces-redirect=true";
@@ -54,6 +71,21 @@ public class LoginController implements Serializable {
         return "/4dm1n1s7r470r/adminlogin?faces-redirect=true";
     }
 
+    public String authenticateForBeteg() {
+        if (betegFacade.getByFelhNev(felhNev).isEmpty()) {
+            return "/beteg/beteglogin?faces-redirect=true";
+        }
+        beteg = betegFacade.getByFelhNev(felhNev).get(0);
+        if (beteg != null) {
+            if (beteg.getJelszo().equals(getMD5String(jelszo))) {
+                return "/beteg/beteg?faces-redirect=true";
+            } else {
+                felhNev = jelszo = null;
+            }
+        }
+        return "/beteg/beteglogin?faces-redirect=true";
+    }
+    
     public String getMD5String(String password) {
         String pwd = "";
         try {
@@ -111,6 +143,22 @@ public class LoginController implements Serializable {
 
     public void setTimeOut(int timeOut) {
         this.timeOut = timeOut;
+    }
+
+    public Admin getAdmin() {
+        return admin;
+    }
+
+    public void setAdmin(Admin admin) {
+        this.admin = admin;
+    }
+
+    public Beteg getBeteg() {
+        return beteg;
+    }
+
+    public void setBeteg(Beteg beteg) {
+        this.beteg = beteg;
     }
 
 }

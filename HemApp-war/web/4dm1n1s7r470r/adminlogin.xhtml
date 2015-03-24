@@ -22,13 +22,13 @@
                         <div style="align: center; vertical-align: middle; display: table-cell;">
                             <center>
                                 <p:panelGrid columns="2">
-                                    <p:outputLabel value="Felhasználónév"/>
+                                    <p:outputLabel value="Felhasználónév:"/>
                                     <p:inputText id="username" value="#{LoginController.felhNev}"/>
                                     <p:outputLabel value="Jelszó:"/>
                                     <p:password value="#{LoginController.jelszo}"/>
                                 </p:panelGrid>
                                 <br/>
-                                <p:commandButton value="Bejelentkezés" action="#{LoginController.authenticate()}"/>
+                                <p:commandButton value="Bejelentkezés" action="#{LoginController.authenticateForAdmin()}"/>
                             </center>
                         </div>
                     </div>

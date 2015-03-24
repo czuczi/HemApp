@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:pm="http://primefaces.org/mobile">
+
+    <f:view renderKitId="PRIMEFACES_MOBILE" />
+
+    <h:head>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta content='text/html; charset=UTF-8' http-equiv="Content-Type"/>
+    </h:head>
+
+    <h:body onload="PF('idleDialog').show();" style="background-color: darkgray; font-size: 0.8em">
+        <pm:page>
+            <p:dialog header="A munkamenet időtúllépés miatt megszakadt!" rendered="#{LoginController.invalidated}" onShow="#{LoginController.invalidateSessionContinue()}" resizable="false" widgetVar="idleDialog" modal="true" closable="false" closeOnEscape="false">
+                <h:form>
+                    <a href="/HemApp-war/beteg/beteglogin.xhtml">Bejelentkezés!</a>
+                </h:form>
+            </p:dialog>
+            <pm:header title="HemApp" />
+
+            <pm:content>
+                <h:form id="loginform">
+                    <p:panelGrid columns="2" style="text-align: center">
+                        <p:outputLabel value="Felhasználónév:"/>
+                        <p:inputText id="username" value="#{LoginController.felhNev}"/>
+                        <p:outputLabel value="Jelszó:"/>
+                        <p:password value="#{LoginController.jelszo}"/>
+                    </p:panelGrid>
+                    <br/>
+                    <center>
+                        <p:commandButton value="Bejelentkezés" action="#{LoginController.authenticateForBeteg()}" style="width: 50%;"/>
+                    </center>
+                </h:form>
+            </pm:content>
+        </pm:page>
+    </h:body>
+
+</html>
