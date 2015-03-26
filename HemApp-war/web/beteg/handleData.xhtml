@@ -29,7 +29,7 @@
 
             <pm:content>
                 <h:form id="tableForm">
-                    <p:panelGrid columns="2" style="width: 500px !important">
+                    <p:panelGrid columns="2">
                         <p:outputLabel value="Felhasználónév: "/>
                         <p:outputLabel value="#{SingleBetegController.actBeteg.felhnev}"/>
                         <p:outputLabel value="Vezetéknév: "/>
@@ -43,7 +43,7 @@
                         <p:outputLabel value="Telefonszám: "/>
                         <p:outputLabel value="#{SingleBetegController.actBeteg.telefon}"/>
                         <p:outputLabel value="Orvos:" />
-                        <p:outputLabel value="#{SingleBetegController.actBeteg.orvosID.vezeteknev} #{SingleBetegController.actBeteg.orvosID.keresztnev} #{SingleBetegController.actBeteg.orvosID.felhnev}" />
+                        <p:outputLabel value="#{SingleBetegController.actBeteg.orvosID.vezeteknev} #{SingleBetegController.actBeteg.orvosID.keresztnev}" />
                     </p:panelGrid>
                     <p:commandButton value="Adatmódosítás" onclick="PF('editBetegDialogWidget').show()" />
                     <p:commandButton value="Új jelszó" onclick="PF('editJelszoDialogWidget').show()" />
@@ -69,7 +69,7 @@
                                 <f:validateRegex pattern="^[0-9]*$"/>
                             </p:inputText>
                             <p:outputLabel value="Orvos:" />
-                            <p:outputLabel value="#{SingleBetegController.actBeteg.orvosID.vezeteknev} #{SingleBetegController.actBeteg.orvosID.keresztnev} #{SingleBetegController.actBeteg.orvosID.felhnev}" />
+                            <p:outputLabel value="#{SingleBetegController.actBeteg.orvosID.vezeteknev} #{SingleBetegController.actBeteg.orvosID.keresztnev}" />
                         </p:panelGrid>
                         <p:commandButton value="Mentés" actionListener="#{SingleBetegController.editBeteg()}" ajax="false"/>
                     </h:form>

@@ -13,26 +13,33 @@
     </h:head>
 
     <h:body onload="#{LoginController.pageRightCheckerForBeteg()}" style="background-color: darkgray; font-size: 0.8em">
-        <pm:page>
+
+        <p:growl id="message" life="4000" showDetail="true" />
+        <pm:page id="page">
             <p:idleMonitor timeout="#{LoginController.timeOut}">
                 <p:ajax event="idle" listener="#{LoginController.invalidateSession()}"/>
             </p:idleMonitor>
             <pm:header title="HemApp">
                 <h:form id="menu">
                     <p:menu>
-                        <p:submenu label="Menü">
-                            <p:menuitem value="Adataim" url="handleData.xhtml" icon="ui-icon-gear" />
-                            <p:menuitem value="Kezelőorvos adatai" url="orvosData.xhtml" icon="ui-icon-gear"/>
-                            <p:menuitem value="Üzenetek" url="" icon="ui-icon-gear"/>
-                            <p:menuitem value="Készítmény kérése" url="" icon="ui-icon-gear"/>
-                            <p:menuitem value="Otthon lévő mennyiség" url="" icon="ui-icon-gear" />
-                            <p:menuitem value="Kilépés" icon="ui-icon-power" action="#{SingleBetegController.logout()}"/>
-                        </p:submenu>
+                        <p:menuitem value="Menü" url="beteg.xhtml" icon="ui-icon-home" />
                     </p:menu>
                 </h:form>
             </pm:header>
 
             <pm:content>
+                <h:form id="tableForm">
+                    <p:panelGrid columns="2">
+                        <p:outputLabel value="Vezetéknév: "/>
+                        <p:outputLabel value="#{SingleBetegController.actBeteg.vezeteknev}"/>
+                        <p:outputLabel value="Keresztnév: "/>
+                        <p:outputLabel value="#{SingleBetegController.actBeteg.keresztnev}"/>
+                        <p:outputLabel value="E-mail: "/>
+                        <p:outputLabel value="#{SingleBetegController.actBeteg.email}"/>
+                        <p:outputLabel value="Telefonszám: "/>
+                        <p:outputLabel value="#{SingleBetegController.actBeteg.telefon}"/>
+                    </p:panelGrid>
+                </h:form>
             </pm:content>
         </pm:page>
     </h:body>

@@ -27,5 +27,5 @@ public class OrvosFacade extends AbstractFacade<Orvos> {
     public OrvosFacade() {
         super(Orvos.class);
     }
-    
+
 }

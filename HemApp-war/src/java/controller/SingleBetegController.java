@@ -10,8 +10,6 @@ import entity.Orvos;
 import facade.BetegFacade;
 import facade.OrvosFacade;
 import java.io.Serializable;
-import java.util.Comparator;
-import java.util.LinkedList;
 import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
@@ -22,8 +20,6 @@ import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 import org.primefaces.context.RequestContext;
-import org.primefaces.event.SelectEvent;
-import org.primefaces.mobile.event.SwipeEvent;
 
 /**
  *
@@ -45,6 +41,7 @@ public class SingleBetegController implements Serializable {
     private List<Beteg> allBeteg;
 
     private Beteg actBeteg;
+    private Orvos kezeloOrvos;
 
     private String felhNev = "";
     private String felhNevForChange = "";
@@ -61,13 +58,16 @@ public class SingleBetegController implements Serializable {
 
     @PostConstruct
     public void init() {
+        init2();
+        actBeteg = loginController.getBeteg();
+        felhNevForChange = actBeteg.getFelhnev();
+        emailForChange = actBeteg.getEmail();
+        telefonForChange = actBeteg.getTelefon();
+        kezeloOrvos = actBeteg.getOrvosID();
+    }
+    
+    public void init2() {
         allBeteg = betegFacade.findAll();
-        if (actBeteg == null) {
-            actBeteg = loginController.getBeteg();
-            felhNevForChange = actBeteg.getFelhnev();
-            emailForChange = actBeteg.getEmail();
-            telefonForChange = actBeteg.getTelefon();
-        }
     }
 
     public String logout() {
@@ -86,7 +86,6 @@ public class SingleBetegController implements Serializable {
         betegFacade.edit(actBeteg);
         loginController.setBeteg(actBeteg);
         loginController.setJelszo(newPassword);
-        init();
         oldPassword = newPassword = "";
         RequestContext.getCurrentInstance().update("editJelszoForm");
         RequestContext.getCurrentInstance().reset("page:editJelszoForm:");
@@ -117,7 +116,7 @@ public class SingleBetegController implements Serializable {
         betegFacade.edit(actBeteg);
         loginController.setBeteg(actBeteg);
         loginController.setFelhNev(actBeteg.getFelhnev());
-        init();
+        init2();
         RequestContext.getCurrentInstance().update("tableForm");
         RequestContext.getCurrentInstance().update("editBetegForm");
         RequestContext.getCurrentInstance().execute("PF('editBetegDialogWidget').hide()");
@@ -233,6 +232,14 @@ public class SingleBetegController implements Serializable {
 
     public void setLoginController(LoginController loginController) {
         this.loginController = loginController;
+    }
+
+    public Orvos getKezeloOrvos() {
+        return kezeloOrvos;
+    }
+
+    public void setKezeloOrvos(Orvos kezeloOrvos) {
+        this.kezeloOrvos = kezeloOrvos;
     }
 
 }
