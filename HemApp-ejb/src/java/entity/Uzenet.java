@@ -7,6 +7,7 @@ package entity;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.UUID;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -34,7 +35,9 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "Uzenet.findById", query = "SELECT u FROM Uzenet u WHERE u.id = :id"),
     @NamedQuery(name = "Uzenet.findByIdopont", query = "SELECT u FROM Uzenet u WHERE u.idopont = :idopont"),
     @NamedQuery(name = "Uzenet.findBySzoveg", query = "SELECT u FROM Uzenet u WHERE u.szoveg = :szoveg"),
-    @NamedQuery(name = "Uzenet.findByKepLink", query = "SELECT u FROM Uzenet u WHERE u.kepLink = :kepLink")})
+    @NamedQuery(name = "Uzenet.findByKepLink", query = "SELECT u FROM Uzenet u WHERE u.kepLink = :kepLink"),
+    @NamedQuery(name = "Uzenet.findByBeteg", query = "SELECT u FROM Uzenet u WHERE u.betegID = :betegID ORDER BY u.idopont DESC"),
+    @NamedQuery(name = "Uzenet.findByBetegAndOrvos", query = "SELECT u FROM Uzenet u WHERE u.betegID = :betegID AND u.orvosID = :orvosID ORDER BY u.idopont DESC")})
 public class Uzenet implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
@@ -65,17 +68,17 @@ public class Uzenet implements Serializable {
 
     public Uzenet() {
     }
-
-    public Uzenet(String id) {
-        this.id = id;
-    }
-
-    public Uzenet(String id, Date idopont, String szoveg) {
-        this.id = id;
+    
+    
+    public Uzenet(Date idopont, String szoveg, String kepLink, Beteg betegID, Orvos orvosID) {
+        this.id = UUID.randomUUID().toString().replaceAll("-", "");
         this.idopont = idopont;
         this.szoveg = szoveg;
+        this.kepLink = kepLink;
+        this.betegID = betegID;
+        this.orvosID = orvosID;
     }
-
+    
     public String getId() {
         return id;
     }

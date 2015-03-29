@@ -5,7 +5,10 @@
  */
 package facade;
 
+import entity.Beteg;
+import entity.Orvos;
 import entity.Uzenet;
+import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -28,4 +31,11 @@ public class UzenetFacade extends AbstractFacade<Uzenet> {
         super(Uzenet.class);
     }
     
+    public List<Uzenet> getByBeteg(Beteg beteg) {
+        return em.createNamedQuery("Uzenet.findByBeteg").setParameter("betegID", beteg).getResultList();
+    }
+    
+    public List<Uzenet> getByBetegAndOrvos(Beteg beteg, Orvos orvos) {
+        return em.createNamedQuery("Uzenet.findByBetegAndOrvos").setParameter("betegID", beteg).setParameter("orvosID", orvos).getResultList();
+    }
 }

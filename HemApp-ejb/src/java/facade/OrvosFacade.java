@@ -6,6 +6,7 @@
 package facade;
 
 import entity.Orvos;
+import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -27,5 +28,7 @@ public class OrvosFacade extends AbstractFacade<Orvos> {
     public OrvosFacade() {
         super(Orvos.class);
     }
-
+ public List<Orvos> getByID(String id) {
+        return em.createNamedQuery("Orvos.findById").setParameter("id", id).getResultList();
+    }
 }

@@ -7,10 +7,25 @@ package controller;
 
 import entity.Beteg;
 import entity.Orvos;
+import entity.Uzenet;
 import facade.BetegFacade;
 import facade.OrvosFacade;
+import facade.UzenetFacade;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.Serializable;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
+import java.util.TimeZone;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.activation.MimetypesFileTypeMap;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
@@ -19,7 +34,12 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
+import org.apache.commons.io.FileUtils;
 import org.primefaces.context.RequestContext;
+import org.primefaces.event.FileUploadEvent;
+import org.primefaces.model.DefaultStreamedContent;
+import org.primefaces.model.StreamedContent;
+import org.primefaces.model.UploadedFile;
 
 /**
  *
@@ -37,12 +57,20 @@ public class SingleBetegController implements Serializable {
     private BetegFacade betegFacade;
     @EJB
     private OrvosFacade orvosFacade;
+    @EJB
+    private UzenetFacade uzenetFacade;
 
     private List<Beteg> allBeteg;
+    private List<Uzenet> myUzenetList;
+    private List<Uzenet> myUzenetListByOrvos;
+    private List<Uzenet> segedUzenetList;
+    private HashSet<Orvos> orvosok = new HashSet<>();
 
     private Beteg actBeteg;
     private Orvos kezeloOrvos;
+    private Orvos selectedOrvos;
 
+    private String selectedOrvosID;
     private String felhNev = "";
     private String felhNevForChange = "";
     private String jelszo = "";
@@ -55,6 +83,11 @@ public class SingleBetegController implements Serializable {
     private String emailForChange;
     private String telefonForChange;
     private String taj;
+    private String szoveg;
+
+    private String kepLink;
+    private boolean badFileFormat = false;
+    private int uzenetStartIndex = 0;
 
     @PostConstruct
     public void init() {
@@ -64,10 +97,135 @@ public class SingleBetegController implements Serializable {
         emailForChange = actBeteg.getEmail();
         telefonForChange = actBeteg.getTelefon();
         kezeloOrvos = actBeteg.getOrvosID();
+        orvosok.add(kezeloOrvos);
+        selectedOrvosID = kezeloOrvos.getId();
+        selectedOrvos = kezeloOrvos;
+        initUzenetByORvos();
+        initUzenet();
     }
-    
+
     public void init2() {
         allBeteg = betegFacade.findAll();
+    }
+
+    public void initUzenet() {
+        myUzenetList = uzenetFacade.getByBeteg(actBeteg);
+        for (Uzenet uzenet : myUzenetList) {
+            orvosok.add(uzenet.getOrvosID());
+        }
+    }
+
+    public void decreaseStartIndex() {
+        if (uzenetStartIndex > 0) {
+            uzenetStartIndex--;
+            initUzenetByORvos();
+            RequestContext.getCurrentInstance().update("page:uzenetek:uzenetDataList:uzenetSzamLabel");
+            RequestContext.getCurrentInstance().update("page:uzenetek:uzenetDataList:uzenetSzamLabel2");
+            for (int i = 0; i < 5; i++) {
+                RequestContext.getCurrentInstance().update("page:uzenetek:uzenetDataList:" + i + ":uzenetOutputPanel");
+            }
+        }
+    }
+
+    public void increaseStartIndex() {
+        if (uzenetStartIndex < segedUzenetList.size() - 5) {
+            uzenetStartIndex++;
+            initUzenetByORvos();
+            RequestContext.getCurrentInstance().update("page:uzenetek:uzenetDataList:uzenetSzamLabel");
+            RequestContext.getCurrentInstance().update("page:uzenetek:uzenetDataList:uzenetSzamLabel2");
+            for (int i = 0; i < 5; i++) {
+                RequestContext.getCurrentInstance().update("page:uzenetek:uzenetDataList:" + i + ":uzenetOutputPanel");
+            }
+        }
+    }
+
+    public void initUzenetByORvos() {
+        selectedOrvos = orvosFacade.getByID(selectedOrvosID).get(0);
+        segedUzenetList = uzenetFacade.getByBetegAndOrvos(actBeteg, selectedOrvos);
+        if (segedUzenetList.size() > uzenetStartIndex + 5) {
+            myUzenetListByOrvos = segedUzenetList.subList(uzenetStartIndex, uzenetStartIndex + 5);
+        } else {
+            myUzenetListByOrvos = segedUzenetList.subList(uzenetStartIndex, segedUzenetList.size());
+        }
+    }
+    
+    public void refreshPage() {
+        initUzenetByORvos();
+        try {
+            FacesContext.getCurrentInstance().getExternalContext().redirect("./messages.xhtml");
+        } catch (IOException ex) {
+            Logger.getLogger(SingleBetegController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    public StreamedContent fileDownload(String src) {
+        InputStream fileInputStream = null;
+        try {
+            fileInputStream = new FileInputStream(src);
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(SingleBetegController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        DefaultStreamedContent dsc = new DefaultStreamedContent(fileInputStream);
+        dsc.setName(src.split("/")[src.split("/").length - 1]);
+        return dsc;
+    }
+
+    public void handleFileUpload(FileUploadEvent event) {
+        UploadedFile kep = (UploadedFile) event.getFile();
+
+        InputStream inputStr = null;
+
+        if (kep.getSize() == 0) {
+            return;
+        }
+
+        try {
+            inputStr = kep.getInputstream();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        kepLink = (System.getProperty("user.home") + "/Desktop/hemAppKepek/" + new Date(System.currentTimeMillis()).getTime() + "/" + kep.getFileName()).replaceAll("\\\\", "/");
+        File destFile = new File(kepLink);
+
+        String mimetype = new MimetypesFileTypeMap().getContentType(destFile);
+        String type = mimetype.split("/")[0];
+        if (!type.equals("image")) {
+            badFileFormat = true;
+            RequestContext.getCurrentInstance().execute("PF('uzenetDialogWidget').hide()");
+            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "WARNING", "A kép formátuma nem megfelelő!");
+            FacesContext.getCurrentInstance().addMessage(null, msg);
+            return;
+        }
+
+        try {
+            FileUtils.copyInputStreamToFile(inputStr, destFile);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        try {
+            if (inputStr != null) {
+                inputStr.close();
+            }
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    public void sendMessage() {
+        if(szoveg == null || szoveg.length() == 0) {
+            RequestContext.getCurrentInstance().execute("PF('uzenetDialogWidget').hide()");
+            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "WARNING", "Az üzenet nem lehet üres!");
+            FacesContext.getCurrentInstance().addMessage(null, msg);
+            return;
+        }
+        if (badFileFormat) {
+            badFileFormat = false;
+            return;
+        }
+        uzenetFacade.create(new Uzenet(new Date(System.currentTimeMillis()), szoveg, kepLink, actBeteg, kezeloOrvos));
+        szoveg = kepLink = null;
+        initUzenetByORvos();
     }
 
     public String logout() {
@@ -240,6 +398,54 @@ public class SingleBetegController implements Serializable {
 
     public void setKezeloOrvos(Orvos kezeloOrvos) {
         this.kezeloOrvos = kezeloOrvos;
+    }
+
+    public List<Uzenet> getMyUzenetListByOrvos() {
+        return myUzenetListByOrvos;
+    }
+
+    public void setMyUzenetListByOrvos(List<Uzenet> myUzenetListByOrvos) {
+        this.myUzenetListByOrvos = myUzenetListByOrvos;
+    }
+
+    public HashSet<Orvos> getOrvosok() {
+        return orvosok;
+    }
+
+    public void setOrvosok(HashSet<Orvos> orvosok) {
+        this.orvosok = orvosok;
+    }
+
+    public String getSelectedOrvosID() {
+        return selectedOrvosID;
+    }
+
+    public void setSelectedOrvosID(String selectedOrvosID) {
+        this.selectedOrvosID = selectedOrvosID;
+    }
+
+    public String getSzoveg() {
+        return szoveg;
+    }
+
+    public void setSzoveg(String szoveg) {
+        this.szoveg = szoveg;
+    }
+
+    public int getUzenetStartIndex() {
+        return uzenetStartIndex;
+    }
+
+    public void setUzenetStartIndex(int uzenetStartIndex) {
+        this.uzenetStartIndex = uzenetStartIndex;
+    }
+
+    public List<Uzenet> getSegedUzenetList() {
+        return segedUzenetList;
+    }
+
+    public void setSegedUzenetList(List<Uzenet> segedUzenetList) {
+        this.segedUzenetList = segedUzenetList;
     }
 
 }

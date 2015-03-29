@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:pm="http://primefaces.org/mobile">
+
+    <f:view renderKitId="PRIMEFACES_MOBILE" />
+
+    <h:head>
+        <style>
+            .ui-loader {
+                display:none !important;
+            }
+            .ui-icon-loading {
+                background:none !important;
+            }
+        </style>
+        <script type="text/javascript">
+            function maxLengthChecker(textarea, e) {
+                var seged = false || e.keyCode == 8 || e.keyCode == 46 || e.keyCode == 37 || e.keyCode == 38 || e.keyCode == 39 || e.keyCode == 40;
+                if (textarea.value.length >= 1000) {
+                    if (!seged) {
+                        if (window.event)//IE
+                            e.returnValue = false;
+                        else//Firefox
+                            e.preventDefault();
+                    }
+                }
+            }
+            function counterSetter(textarea) {
+                textarea.parentNode.childNodes[1].innerHTML = (1000 - textarea.value.length) + " karakter van hátra.";
+            }
+        </script>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta content='text/html; charset=UTF-8' http-equiv="Content-Type"/>
+    </h:head>
+
+    <h:body onload="#{LoginController.pageRightCheckerForBeteg()}" style="background-color: darkgray; font-size: 0.8em">
+
+        <p:growl id="message" life="4000" showDetail="true" />
+        <pm:page id="page">
+            <p:idleMonitor timeout="#{LoginController.timeOut}">
+                <p:ajax event="idle" listener="#{LoginController.invalidateSession()}"/>
+            </p:idleMonitor>
+            <pm:header title="HemApp">
+                <h:form id="menu">
+                    <p:menu>
+                        <p:menuitem value="Menü" url="beteg.xhtml" icon="ui-icon-home" />
+                    </p:menu>
+                </h:form>
+            </pm:header>
+
+            <pm:content>
+                <h:form id="selection" rendered="#{SingleBetegController.orvosok.size() > 1}">
+                    <pm:field>
+                        <p:outputLabel for="selectOrvos" value="Orvos választása:" />
+                        <p:selectOneMenu id="selectOrvos" value="#{SingleBetegController.selectedOrvosID}">
+                            <p:ajax event="change" listener="#{SingleBetegController.refreshPage()}"/>
+                            <f:selectItems value="#{SingleBetegController.orvosok}" var="orvos" itemLabel="#{orvos.vezeteknev} #{orvos.keresztnev}" itemValue="#{orvos.id}"/>
+                        </p:selectOneMenu>
+                    </pm:field>
+                </h:form>
+                <h:form id="uzenetek">
+                    <p:commandButton value="Új üzenet" onclick="PF('uzenetDialogWidget').show()" rendered="#{SingleBetegController.actBeteg.orvosID.id.equals(SingleBetegController.selectedOrvosID)}"/>
+                    <br/>
+                    <p:dataList value="#{SingleBetegController.myUzenetListByOrvos}" var="uzenet" id="uzenetDataList">
+                        <f:facet name="header">
+                            <center>
+                                <p:commandButton class="ui-datepicker-prev ui-corner-all ui-btn ui-btn-icon-notext ui-btn-inline ui-icon-arrow-l ui-shadow" actionListener="#{SingleBetegController.decreaseStartIndex()}"/>
+                                <p:outputLabel id="uzenetSzamLabel" style="display: inline !important" value="Üzenetek #{SingleBetegController.segedUzenetList.size() > 4 ? SingleBetegController.uzenetStartIndex + 5 : SingleBetegController.segedUzenetList.size()}/#{SingleBetegController.segedUzenetList.size()} "/>
+                                <p:commandButton class="ui-datepicker-next ui-corner-all ui-btn ui-btn-icon-notext ui-btn-inline ui-icon-arrow-r ui-shadow" actionListener="#{SingleBetegController.increaseStartIndex()}"/>
+                            </center>
+                        </f:facet>
+                        <p:outputPanel id="uzenetOutputPanel">
+                            <p:commandButton style="width: 100px !important; font-size: 0.8em" value="Csatolt kép" ajax="false">
+                                <p:fileDownload value="#{SingleBetegController.fileDownload(uzenet.kepLink)}" />
+                            </p:commandButton>
+                            <p>#{uzenet.szoveg}</p>
+                            <p class="ui-li-aside">
+                                <strong>
+                                    <h:outputText value="#{uzenet.idopont}">
+                                        <f:convertDateTime pattern="yyyy. MM. dd. HH:mm:ss" />
+                                    </h:outputText>
+                                </strong>
+                            </p>
+                        </p:outputPanel>
+                        <f:facet name="footer">
+                            <center>
+                                <p:commandButton class="ui-datepicker-prev ui-corner-all ui-btn ui-btn-icon-notext ui-btn-inline ui-icon-arrow-l ui-shadow" actionListener="#{SingleBetegController.decreaseStartIndex()}"/>
+                                <p:outputLabel id="uzenetSzamLabel2" style="display: inline !important" value="Üzenetek #{SingleBetegController.segedUzenetList.size() > 4 ? SingleBetegController.uzenetStartIndex + 5 : SingleBetegController.segedUzenetList.size()}/#{SingleBetegController.segedUzenetList.size()} "/>
+                                <p:commandButton class="ui-datepicker-next ui-corner-all ui-btn ui-btn-icon-notext ui-btn-inline ui-icon-arrow-r ui-shadow" actionListener="#{SingleBetegController.increaseStartIndex()}"/>
+                            </center>
+                        </f:facet>
+                    </p:dataList>
+                </h:form>
+                <p:dialog id="uzenetDialog" widgetVar="uzenetDialogWidget" resizable="false"
+                          header="Üzenet" style="width: max-content !important">
+                    <h:form id="uzenetForm" enctype="multipart/form-data">
+                        <p:growl showDetail="true"/>
+                        <p:fileUpload fileUploadListener="#{SingleBetegController.handleFileUpload}"/>
+                        <p:panelGrid columns="2">
+                            <p:outputLabel value="Üzenet: "/>
+                            <p:column>
+                                <p:inputTextarea id="textarea" maxlength="10" value="#{SingleBetegController.szoveg}" onkeypress="maxLengthChecker(this, event);" onkeyup="counterSetter(this);">
+                                </p:inputTextarea>
+                                <p:outputLabel id="counterText" style="font-size: 0.8em" value="1000 karakter van hátra." />
+                            </p:column>
+                        </p:panelGrid>
+                        <p:commandButton value="Elküld" actionListener="#{SingleBetegController.sendMessage()}" ajax="false"/>
+                    </h:form>
+                </p:dialog>
+            </pm:content>
+        </pm:page>
+    </h:body>
+
+</html>
