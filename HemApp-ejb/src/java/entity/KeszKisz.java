@@ -7,6 +7,7 @@ package entity;
 
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.UUID;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -57,10 +58,7 @@ public class KeszKisz implements Serializable {
     private Collection<KertKeszKisz> kertKeszKiszCollection;
 
     public KeszKisz() {
-    }
-
-    public KeszKisz(String id) {
-        this.id = id;
+        this.id = UUID.randomUUID().toString().replaceAll("-", "");
     }
 
     public String getId() {

@@ -7,6 +7,7 @@ package entity;
 
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.UUID;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -53,12 +54,8 @@ public class Keszitmeny implements Serializable {
     public Keszitmeny() {
     }
 
-    public Keszitmeny(String id) {
-        this.id = id;
-    }
-
-    public Keszitmeny(String id, String nev) {
-        this.id = id;
+    public Keszitmeny(String nev) {
+        this.id = UUID.randomUUID().toString().replaceAll("-", "");
         this.nev = nev;
     }
 

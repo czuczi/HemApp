@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:pm="http://primefaces.org/mobile">
+
+    <f:view renderKitId="PRIMEFACES_MOBILE" />
+
+    <h:head>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta content='text/html; charset=UTF-8' http-equiv="Content-Type"/>
+    </h:head>
+
+    <h:body onload="#{LoginController.pageRightCheckerForOrvos()}" style="background-color: darkgray; font-size: 0.8em">
+
+        <p:growl id="message" life="4000" showDetail="true" />
+        <pm:page id="page">
+            <p:idleMonitor timeout="#{LoginController.timeOut}">
+                <p:ajax event="idle" listener="#{LoginController.invalidateSession()}"/>
+            </p:idleMonitor>
+            <pm:header title="HemApp">
+                <h:form id="menu">
+                    <p:menu>
+                        <p:menuitem value="Menü" url="orvos.xhtml" icon="ui-icon-home" />
+                    </p:menu>
+                </h:form>
+            </pm:header>
+
+            <pm:content>
+                <h:form id="tableForm">
+                    <p:panelGrid columns="2">
+                        <p:outputLabel value="Felhasználónév: "/>
+                        <p:outputLabel value="#{SingleOrvosController.actOrvos.felhnev}"/>
+                        <p:outputLabel value="Vezetéknév: "/>
+                        <p:outputLabel value="#{SingleOrvosController.actOrvos.vezeteknev}"/>
+                        <p:outputLabel value="Keresztnév: "/>
+                        <p:outputLabel value="#{SingleOrvosController.actOrvos.keresztnev}"/>
+                        <p:outputLabel value="E-mail: "/>
+                        <p:outputLabel value="#{SingleOrvosController.actOrvos.email}"/>
+                        <p:outputLabel value="Telefonszám: "/>
+                        <p:outputLabel value="#{SingleOrvosController.actOrvos.telefon}"/>
+                    </p:panelGrid>
+                    <p:commandButton value="Adatmódosítás" onclick="PF('editBetegDialogWidget').show()" />
+                    <p:commandButton value="Új jelszó" onclick="PF('editJelszoDialogWidget').show()" />
+                </h:form>
+                <p:dialog id="editBetegDialog" widgetVar="editBetegDialogWidget" resizable="false"
+                          header="Adatmódosítás" style="width: max-content !important">
+                    <h:form id="editBetegForm">
+                        <p:panelGrid columns="2">
+                            <p:outputLabel value="Felhasználónév: "/>
+                            <p:inputText value="#{SingleOrvosController.felhNevForChange}" required="true" requiredMessage="Kérem adja meg a felhasználónevet!" />
+                            <p:outputLabel value="Vezetéknév: "/>
+                            <p:outputLabel value="#{SingleOrvosController.actOrvos.vezeteknev}"/>
+                            <p:outputLabel value="Keresztnév: "/>
+                            <p:outputLabel value="#{SingleOrvosController.actOrvos.keresztnev}"/>
+                            <p:outputLabel value="E-mail: "/>
+                            <p:inputText value="#{SingleOrvosController.emailForChange}" validatorMessage="Az e-mail cím formátuma nem megfelelő!">
+                                <f:validateRegex pattern="^$|^[_A-Za-z0-9-\+]+(\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\.[ A-Za-z0-9-]+)*(\.[A-Za-z]{2,})$"/>
+                            </p:inputText>
+                            <p:outputLabel value="Telefonszám: "/>
+                            <p:inputText value="#{SingleOrvosController.telefonForChange}" validatorMessage="Kérem csak számokat adjon meg!">
+                                <f:validateRegex pattern="^[0-9]*$"/>
+                            </p:inputText>
+                        </p:panelGrid>
+                        <p:commandButton value="Mentés" actionListener="#{SingleOrvosController.editOrvos()}" ajax="false"/>
+                    </h:form>
+                </p:dialog>
+                <p:dialog id="editJelszoDialog" widgetVar="editJelszoDialogWidget" resizable="false"
+                          header="Jelszómódosítás" style="width: max-content !important">
+                    <h:form id="editJelszoForm">
+                        <p:panelGrid columns="2">
+                            <p:outputLabel value="Régi jelszó: " />
+                            <p:password id="old_Password" value="#{SingleOrvosController.oldPassword}" required="true" label="Jelszó" widgetVar="pwdoldvar" requiredMessage="Kérem adja meg a régi jelszavát!"/>
+                            <p:outputLabel value="Új jelszó: " />
+                            <p:password id="Password" value="#{SingleOrvosController.newPassword}" required="true" match="Password_again" label="Password" widgetVar="pwd1var" validatorMessage="A két jelszónak meg kell egyeznie!" requiredMessage="Kérem adja meg az új jelszavát!"/>
+                            <p:outputLabel value="Új jelszó újra: " />
+                            <p:password id="Password_again" required="true" label="Jelszó újra" widgetVar="pwd2var" requiredMessage="Kérem adja meg az új jelszavát újra!"/>
+                        </p:panelGrid>
+                        <p:commandButton value="Mentés" actionListener="#{SingleOrvosController.editJelszo()}" ajax="false"/>
+                    </h:form>
+                </p:dialog>
+            </pm:content>
+        </pm:page>
+    </h:body>
+
+</html>

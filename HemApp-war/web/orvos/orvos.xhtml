@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:pm="http://primefaces.org/mobile">
+
+    <f:view renderKitId="PRIMEFACES_MOBILE" />
+
+    <h:head>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta content='text/html; charset=UTF-8' http-equiv="Content-Type"/>
+    </h:head>
+
+    <h:body onload="#{LoginController.pageRightCheckerForOrvos()}" style="background-color: darkgray; font-size: 0.8em">
+        <pm:page>
+            <p:idleMonitor timeout="#{LoginController.timeOut}">
+                <p:ajax event="idle" listener="#{LoginController.invalidateSession()}"/>
+            </p:idleMonitor>
+            <pm:header title="HemApp">
+                <h:form id="menu">
+                    <p:menu>
+                        <p:submenu label="Menü">
+                            <p:menuitem value="Adataim" url="handleData.xhtml" icon="ui-icon-gear" />
+                            <p:menuitem value="Betegeim adatai" url="betegData.xhtml" icon="ui-icon-gear"/>
+                            <p:menuitem value="Üzenetek" url="messages.xhtml" icon="ui-icon-gear"/>
+                            <p:menuitem value="Készítmény kérése" url="" icon="ui-icon-gear"/>
+                            <p:menuitem value="Otthon lévő mennyiség" url="" icon="ui-icon-gear" />
+                            <p:menuitem value="Kilépés" icon="ui-icon-power" action="#{SingleOrvosController.logout()}"/>
+                        </p:submenu>
+                    </p:menu>
+                </h:form>
+            </pm:header>
+
+            <pm:content>
+            </pm:content>
+        </pm:page>
+    </h:body>
+
+</html>

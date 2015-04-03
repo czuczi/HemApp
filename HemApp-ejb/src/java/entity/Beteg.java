@@ -97,10 +97,6 @@ public class Beteg implements Serializable {
     public Beteg() {
     }
 
-    public Beteg(String id) {
-        this.id = id;
-    }
-
     public Beteg(String felhnev, String jelszo, String vezeteknev, String keresztnev, int taj) {
         this.id = UUID.randomUUID().toString().replaceAll("-", "");
         this.felhnev = felhnev;

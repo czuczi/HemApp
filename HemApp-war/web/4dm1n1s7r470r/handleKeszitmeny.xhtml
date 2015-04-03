@@ -1,0 +1,145 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui" >
+    <h:head>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta content='text/html; charset=UTF-8' http-equiv="Content-Type"/>
+        <title>HemApp</title>
+    </h:head>
+    <body onload="#{LoginController.pageRightCheckerForAdmin()}" style="background-color: darkgray; font-size: 0.8em">
+        <p:idleMonitor timeout="#{LoginController.timeOut}">
+            <p:ajax event="idle" listener="#{LoginController.invalidateSession()}"/>
+        </p:idleMonitor>
+        <p:growl id="message" life="4000" showDetail="true" />
+        <h:form id="page">
+            <p:menubar>
+                <p:menuitem value="Betegek menedzselése" url="handlePatient.xhtml" icon="ui-icon-wrench" />
+                <p:menuitem value="Adminok menedzselése" url="handleAdmin.xhtml" icon="ui-icon-wrench"/>
+                <p:menuitem value="Orvosok menedzselése" url="handleDoctor.xhtml" icon="ui-icon-wrench"/>
+                <p:menuitem value="Készítmények menedzselése" url="handleKeszitmeny.xhtml" icon="ui-icon-wrench"/>
+                <p:menuitem value="Jelszómódosítás" url="changePassword.xhtml" icon="ui-icon-wrench"/>
+                <p:menuitem value="Kilépés" icon="ui-icon-power" action="#{AdminController.logout()}"/>
+            </p:menubar>
+        </h:form>
+        <p:panelGrid columns="2">
+            <p:column>
+                <h:form id="keszitmeny">
+                    <p:panel header="Készítmények">
+                        <p:dataTable id="keszitmenytable" widgetVar="keszitmenytableWidget" value="#{KeszitmenyController.allKeszitmeny}" var="keszitmeny" 
+                                     rowKey="#{keszitmeny.id}" disabledSelection="false" selectionMode="single" 
+                                     selection="#{KeszitmenyController.selectedKeszitmeny}" paginator="true" rows="25">
+                            <p:ajax event="rowSelect" listener="#{KeszitmenyController.selectKeszitmeny}" />
+                            <p:column headerText="Név">
+                                #{keszitmeny.nev}
+                            </p:column>
+                        </p:dataTable>
+                        <center>
+                            <p:commandButton value="Új" onclick="PF('newKeszitmenyDialogWidget').show()" update=":message" />
+                            <p:commandButton value="Törlés" actionListener="#{KeszitmenyController.deleteKeszitmeny()}" ajax="true" update=":message" >
+                                <p:confirm header="Megerősítés" message="A törléssel az összes hozzá tartozó adat is törlődik, folytatja?" icon="ui-icon-alert" />
+                            </p:commandButton>
+                        </center>
+                        <p:confirmDialog global="true" showEffect="fade" hideEffect="explode">
+                            <p:commandButton value="Igen" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+                            <p:commandButton value="Nem" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+                        </p:confirmDialog>
+                    </p:panel>
+                </h:form>
+            </p:column>
+            <p:column>
+                <h:form id="kiszereles">
+                    <p:panel header="Kiszerelések">
+                        <p:dataTable id="kiszerelestable" widgetVar="kiszerelestableWidget" value="#{KeszitmenyController.allKiszereles}" var="kiszereles" 
+                                     rowKey="#{kiszereles.id}" disabledSelection="false" selectionMode="single" 
+                                     selection="#{KeszitmenyController.selectedKiszereles}" paginator="true" rows="25">
+                            <p:ajax event="rowSelect" listener="#{KeszitmenyController.selectKiszereles}" />
+                            <p:column headerText="Kiszerelés">
+                                #{kiszereles.NE}
+                            </p:column>
+                        </p:dataTable>
+                        <center>
+                            <p:commandButton value="Új" onclick="PF('newKiszerelesDialogWidget').show()" update=":message" />
+                            <p:commandButton value="Törlés" actionListener="#{KeszitmenyController.deleteKiszereles()}" ajax="true" update=":message" >
+                                <p:confirm header="Megerősítés" message="A törléssel az összes hozzá tartozó adat is törlődik, folytatja?" icon="ui-icon-alert" />
+                            </p:commandButton>
+                        </center>
+                        <p:confirmDialog global="true" showEffect="fade" hideEffect="explode">
+                            <p:commandButton value="Igen" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+                            <p:commandButton value="Nem" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+                        </p:confirmDialog>
+                    </p:panel>
+                </h:form>
+            </p:column>
+        </p:panelGrid>
+        <h:form id="keszkisz">
+            <p:panel header="Készítmények kiszerelései">
+                <p:dataTable id="keszitmenytable" widgetVar="keszitmenytableWidget" value="#{KeszitmenyController.allKeszKisz}" var="keszkisz" 
+                             rowKey="#{keszkisz.id}" disabledSelection="false" selectionMode="single" 
+                             selection="#{KeszitmenyController.selectedKeszKisz}" paginator="true" rows="25">
+                    <p:ajax event="rowSelect" listener="#{KeszitmenyController.selectKeszitmeny}" />
+                    <p:column headerText="Név">
+                        #{keszkisz.keszitmenyID.nev}
+                    </p:column>
+                    <p:column headerText="Kiszerelés">
+                        #{keszkisz.kiszerelesID.NE}
+                    </p:column>
+                </p:dataTable>
+                <center>
+                    <p:commandButton value="Új" onclick="PF('newKeszKiszDialogWidget').show()" update=":message" />
+                    <p:commandButton value="Törlés" actionListener="#{KeszitmenyController.deleteKeszKisz()}" ajax="true" update=":message" >
+                        <p:confirm header="Megerősítés" message="A törléssel az összes hozzá tartozó adat is törlődik, folytatja?" icon="ui-icon-alert" />
+                    </p:commandButton>
+                </center>
+                <p:confirmDialog global="true" showEffect="fade" hideEffect="explode">
+                    <p:commandButton value="Igen" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+                    <p:commandButton value="Nem" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+                </p:confirmDialog>
+            </p:panel>
+        </h:form>
+        <h:form id="newKeszitmenyForm">
+            <p:dialog id="newKeszitmenyDialog" widgetVar="newKeszitmenyDialogWidget" resizable="false"
+                      header="Új Készítmény">
+                <p:panelGrid columns="2">
+                    <p:outputLabel value="Név "/>
+                    <p:inputText value="#{KeszitmenyController.keszitmenyNev}" required="true" requiredMessage="Kérem adja meg a készítmény nevét!" />
+                </p:panelGrid>
+                <center>
+                    <p:commandButton value="Készítmény hozzáadása" actionListener="#{KeszitmenyController.createKeszitmeny()}" ajax="true" update=":message, :keszitmeny" />
+                </center>
+            </p:dialog>
+        </h:form>
+        <h:form id="newKiszerelesForm">
+            <p:dialog id="newKiszerelesDialog" widgetVar="newKiszerelesDialogWidget" resizable="false"
+                      header="Új Kiszerelés">
+                <p:panelGrid columns="2">
+                    <p:outputLabel value="Kiszerelés "/>
+                    <p:inputText value="#{KeszitmenyController.kiszerelesNE}" required="true" requiredMessage="Kérem adja meg a kiszerelést!" />
+                </p:panelGrid>
+                <center>
+                    <p:commandButton value="Kiszerelés hozzáadása" actionListener="#{KeszitmenyController.createKiszereles()}" ajax="true" update=":message, :kiszereles" />
+                </center>
+            </p:dialog>
+        </h:form>
+        <h:form id="newKeszKiszForm">
+            <p:dialog id="newKeszKiszDialog" widgetVar="newKeszKiszDialogWidget" resizable="false"
+                      header="Készítmény új kiszerelése">
+                <p:panelGrid columns="2">
+                    <p:outputLabel value="Készítmény "/>
+                    <p:selectOneMenu value="#{KeszitmenyController.keszitmenyID}">
+                        <f:selectItems value="#{KeszitmenyController.allKeszitmeny}" var="kesz" itemLabel="#{kesz.nev}" itemValue="#{kesz.id}"/>
+                    </p:selectOneMenu>
+                    <p:outputLabel value="Kiszerelés "/>
+                    <p:selectOneMenu value="#{KeszitmenyController.kiszerelesID}">
+                        <f:selectItems value="#{KeszitmenyController.allKiszereles}" var="kisz" itemLabel="#{kisz.NE}" itemValue="#{kisz.id}"/>
+                    </p:selectOneMenu>
+                </p:panelGrid>
+                <center>
+                    <p:commandButton value="Új kiszerelés hozzáadása a készítményhez" actionListener="#{KeszitmenyController.createKeszKisz()}" ajax="true" update=":message, :keszkisz" />
+                </center>
+            </p:dialog>
+        </h:form>
+    </body>
+</html>

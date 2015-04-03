@@ -6,6 +6,7 @@
 package facade;
 
 import entity.Keszitmeny;
+import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -28,4 +29,11 @@ public class KeszitmenyFacade extends AbstractFacade<Keszitmeny> {
         super(Keszitmeny.class);
     }
     
+    public List<Keszitmeny> getByNev(String nev) {
+        return em.createNamedQuery("Keszitmeny.findByNev").setParameter("nev", nev).getResultList();
+    }
+    
+    public List<Keszitmeny> getByID(String id) {
+        return em.createNamedQuery("Keszitmeny.findById").setParameter("id", id).getResultList();
+    }
 }

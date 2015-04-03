@@ -32,6 +32,9 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "RaktarKeszKisz.findBySorozatszam", query = "SELECT r FROM RaktarKeszKisz r WHERE r.sorozatszam = :sorozatszam"),
     @NamedQuery(name = "RaktarKeszKisz.findByDarab", query = "SELECT r FROM RaktarKeszKisz r WHERE r.darab = :darab")})
 public class RaktarKeszKisz implements Serializable {
+    @JoinColumn(name = "Orvos_ID", referencedColumnName = "ID")
+    @ManyToOne(optional = false)
+    private Orvos orvosID;
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
@@ -120,6 +123,14 @@ public class RaktarKeszKisz implements Serializable {
     @Override
     public String toString() {
         return "entity.RaktarKeszKisz[ id=" + id + " ]";
+    }
+
+    public Orvos getOrvosID() {
+        return orvosID;
+    }
+
+    public void setOrvosID(Orvos orvosID) {
+        this.orvosID = orvosID;
     }
     
 }

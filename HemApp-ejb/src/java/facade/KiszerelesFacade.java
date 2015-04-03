@@ -6,6 +6,7 @@
 package facade;
 
 import entity.Kiszereles;
+import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -28,4 +29,7 @@ public class KiszerelesFacade extends AbstractFacade<Kiszereles> {
         super(Kiszereles.class);
     }
     
+    public List<Kiszereles> getByID(String id) {
+        return em.createNamedQuery("Kiszereles.findById").setParameter("id", id).getResultList();
+    }
 }

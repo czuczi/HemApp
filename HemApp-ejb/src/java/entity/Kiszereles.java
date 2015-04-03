@@ -7,6 +7,7 @@ package entity;
 
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.UUID;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -31,7 +32,7 @@ import javax.xml.bind.annotation.XmlTransient;
 @NamedQueries({
     @NamedQuery(name = "Kiszereles.findAll", query = "SELECT k FROM Kiszereles k"),
     @NamedQuery(name = "Kiszereles.findById", query = "SELECT k FROM Kiszereles k WHERE k.id = :id"),
-    @NamedQuery(name = "Kiszereles.findByNe", query = "SELECT k FROM Kiszereles k WHERE k.ne = :ne")})
+    @NamedQuery(name = "Kiszereles.findByNe", query = "SELECT k FROM Kiszereles k WHERE k.NE = :ne")})
 public class Kiszereles implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
@@ -43,20 +44,16 @@ public class Kiszereles implements Serializable {
     @Basic(optional = false)
     @NotNull
     @Column(name = "NE")
-    private int ne;
+    private int NE;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "kiszerelesID")
     private Collection<KeszKisz> keszKiszCollection;
 
     public Kiszereles() {
     }
 
-    public Kiszereles(String id) {
-        this.id = id;
-    }
-
-    public Kiszereles(String id, int ne) {
-        this.id = id;
-        this.ne = ne;
+    public Kiszereles(int NE) {
+        this.id = UUID.randomUUID().toString().replaceAll("-", "");
+        this.NE = NE;
     }
 
     public String getId() {
@@ -67,12 +64,12 @@ public class Kiszereles implements Serializable {
         this.id = id;
     }
 
-    public int getNe() {
-        return ne;
+    public int getNE() {
+        return NE;
     }
 
-    public void setNe(int ne) {
-        this.ne = ne;
+    public void setNE(int NE) {
+        this.NE = NE;
     }
 
     @XmlTransient

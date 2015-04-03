@@ -6,6 +6,7 @@
 package entity;
 
 import java.io.Serializable;
+import java.util.Date;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -15,6 +16,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -31,6 +34,11 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "KertKeszKisz.findById", query = "SELECT k FROM KertKeszKisz k WHERE k.id = :id"),
     @NamedQuery(name = "KertKeszKisz.findByDarab", query = "SELECT k FROM KertKeszKisz k WHERE k.darab = :darab")})
 public class KertKeszKisz implements Serializable {
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "idopont")
+    @Temporal(TemporalType.DATE)
+    private Date idopont;
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
@@ -116,6 +124,14 @@ public class KertKeszKisz implements Serializable {
     @Override
     public String toString() {
         return "entity.KertKeszKisz[ id=" + id + " ]";
+    }
+
+    public Date getIdopont() {
+        return idopont;
+    }
+
+    public void setIdopont(Date idopont) {
+        this.idopont = idopont;
     }
     
 }

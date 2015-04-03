@@ -3,7 +3,9 @@ package controller;
 import facade.AdminFacade;
 import entity.Admin;
 import entity.Beteg;
+import entity.Orvos;
 import facade.BetegFacade;
+import facade.OrvosFacade;
 import java.io.IOException;
 import java.io.Serializable;
 import java.math.BigInteger;
@@ -28,10 +30,13 @@ public class LoginController implements Serializable {
     private AdminFacade adminFacade;
     @EJB
     private BetegFacade betegFacade;
+    @EJB
+    private OrvosFacade orvosFacade;
 
     private Admin admin;
     private Beteg beteg;
-    
+    private Orvos orvos;
+
     private String felhNev;
     private String jelszo;
     private boolean invalidated = false;
@@ -45,8 +50,8 @@ public class LoginController implements Serializable {
             }
         }
     }
-    
-        public void pageRightCheckerForBeteg() {
+
+    public void pageRightCheckerForBeteg() {
         if (betegFacade.getByFelhNev(felhNev).isEmpty()) {
             try {
                 FacesContext.getCurrentInstance().getExternalContext().redirect(FacesContext.getCurrentInstance().getExternalContext().getRequestContextPath() + "/beteg/beteglogin.xhtml");
@@ -55,6 +60,14 @@ public class LoginController implements Serializable {
         }
     }
 
+    public void pageRightCheckerForOrvos() {
+        if (orvosFacade.getByFelhNev(felhNev).isEmpty()) {
+            try {
+                FacesContext.getCurrentInstance().getExternalContext().redirect(FacesContext.getCurrentInstance().getExternalContext().getRequestContextPath() + "/orvos/orvoslogin.xhtml");
+            } catch (IOException e) {
+            }
+        }
+    }
 
     public String authenticateForAdmin() {
         if (adminFacade.getByFelhNev(felhNev).isEmpty()) {
@@ -85,7 +98,22 @@ public class LoginController implements Serializable {
         }
         return "/beteg/beteglogin?faces-redirect=true";
     }
-    
+
+    public String authenticateForOrvos() {
+        if (orvosFacade.getByFelhNev(felhNev).isEmpty()) {
+            return "/orvos/orvoslogin?faces-redirect=true";
+        }
+        orvos = orvosFacade.getByFelhNev(felhNev).get(0);
+        if (orvos != null) {
+            if (orvos.getJelszo().equals(getMD5String(jelszo))) {
+                return "/orvos/orvos?faces-redirect=true";
+            } else {
+                felhNev = jelszo = null;
+            }
+        }
+        return "/orvos/orvoslogin?faces-redirect=true";
+    }
+
     public String getMD5String(String password) {
         String pwd = "";
         try {
@@ -159,6 +187,14 @@ public class LoginController implements Serializable {
 
     public void setBeteg(Beteg beteg) {
         this.beteg = beteg;
+    }
+
+    public Orvos getOrvos() {
+        return orvos;
+    }
+
+    public void setOrvos(Orvos orvos) {
+        this.orvos = orvos;
     }
 
 }

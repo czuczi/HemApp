@@ -17,6 +17,7 @@ import javax.persistence.PersistenceContext;
  */
 @Stateless
 public class OrvosFacade extends AbstractFacade<Orvos> {
+
     @PersistenceContext(unitName = "HemApp-ejbPU")
     private EntityManager em;
 
@@ -28,7 +29,12 @@ public class OrvosFacade extends AbstractFacade<Orvos> {
     public OrvosFacade() {
         super(Orvos.class);
     }
- public List<Orvos> getByID(String id) {
+
+    public List<Orvos> getByID(String id) {
         return em.createNamedQuery("Orvos.findById").setParameter("id", id).getResultList();
+    }
+
+    public List<Orvos> getByFelhNev(String felhNev) {
+        return em.createNamedQuery("Orvos.findByFelhnev").setParameter("felhnev", felhNev).getResultList();
     }
 }

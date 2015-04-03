@@ -39,6 +39,8 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Orvos.findByEmail", query = "SELECT o FROM Orvos o WHERE o.email = :email"),
     @NamedQuery(name = "Orvos.findByTelefon", query = "SELECT o FROM Orvos o WHERE o.telefon = :telefon")})
 public class Orvos implements Serializable {
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "orvosID")
+    private Collection<RaktarKeszKisz> raktarKeszKiszCollection;
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
@@ -189,6 +191,15 @@ public class Orvos implements Serializable {
     @Override
     public String toString() {
         return "entity.Orvos[ id=" + id + " ]";
+    }
+
+    @XmlTransient
+    public Collection<RaktarKeszKisz> getRaktarKeszKiszCollection() {
+        return raktarKeszKiszCollection;
+    }
+
+    public void setRaktarKeszKiszCollection(Collection<RaktarKeszKisz> raktarKeszKiszCollection) {
+        this.raktarKeszKiszCollection = raktarKeszKiszCollection;
     }
     
 }

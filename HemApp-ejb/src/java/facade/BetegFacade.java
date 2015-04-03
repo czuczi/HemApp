@@ -17,6 +17,7 @@ import javax.persistence.PersistenceContext;
  */
 @Stateless
 public class BetegFacade extends AbstractFacade<Beteg> {
+
     @PersistenceContext(unitName = "HemApp-ejbPU")
     private EntityManager em;
 
@@ -32,5 +33,8 @@ public class BetegFacade extends AbstractFacade<Beteg> {
     public List<Beteg> getByFelhNev(String felhNev) {
         return em.createNamedQuery("Beteg.findByFelhnev").setParameter("felhnev", felhNev).getResultList();
     }
-    
+
+    public List<Beteg> getByID(String id) {
+        return em.createNamedQuery("Beteg.findById").setParameter("id", id).getResultList();
+    }
 }
