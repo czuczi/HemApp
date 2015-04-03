@@ -7,6 +7,7 @@ package entity;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.UUID;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -34,8 +35,10 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "Injekciotortenet.findById", query = "SELECT i FROM Injekciotortenet i WHERE i.id = :id"),
     @NamedQuery(name = "Injekciotortenet.findByKezdetdatum", query = "SELECT i FROM Injekciotortenet i WHERE i.kezdetdatum = :kezdetdatum"),
     @NamedQuery(name = "Injekciotortenet.findByVegedatum", query = "SELECT i FROM Injekciotortenet i WHERE i.vegedatum = :vegedatum"),
-    @NamedQuery(name = "Injekciotortenet.findByMennyiseg", query = "SELECT i FROM Injekciotortenet i WHERE i.mennyiseg = :mennyiseg")})
+    @NamedQuery(name = "Injekciotortenet.findByMennyiseg", query = "SELECT i FROM Injekciotortenet i WHERE i.mennyiseg = :mennyiseg"),
+    @NamedQuery(name = "Injekciotortenet.findActualByBeteg", query = "SELECT i FROM Injekciotortenet i WHERE i.betegID = :betegID AND i.vegedatum = NULL")})
 public class Injekciotortenet implements Serializable {
+
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
@@ -63,14 +66,11 @@ public class Injekciotortenet implements Serializable {
     private Keszitmeny keszitmenyID;
 
     public Injekciotortenet() {
+        this.id = UUID.randomUUID().toString().replaceAll("-", "");
     }
 
-    public Injekciotortenet(String id) {
-        this.id = id;
-    }
-
-    public Injekciotortenet(String id, Date kezdetdatum, int mennyiseg) {
-        this.id = id;
+    public Injekciotortenet(Date kezdetdatum, int mennyiseg) {
+        this.id = UUID.randomUUID().toString().replaceAll("-", "");
         this.kezdetdatum = kezdetdatum;
         this.mennyiseg = mennyiseg;
     }
@@ -147,5 +147,5 @@ public class Injekciotortenet implements Serializable {
     public String toString() {
         return "entity.Injekciotortenet[ id=" + id + " ]";
     }
-    
+
 }

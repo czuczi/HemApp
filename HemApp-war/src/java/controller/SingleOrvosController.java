@@ -6,9 +6,13 @@
 package controller;
 
 import entity.Beteg;
+import entity.Injekciotortenet;
+import entity.Keszitmeny;
 import entity.Orvos;
 import entity.Uzenet;
 import facade.BetegFacade;
+import facade.InjekciotortenetFacade;
+import facade.KeszitmenyFacade;
 import facade.OrvosFacade;
 import facade.UzenetFacade;
 import java.io.File;
@@ -18,6 +22,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -60,6 +66,10 @@ public class SingleOrvosController implements Serializable {
     private OrvosFacade orvosFacade;
     @EJB
     private UzenetFacade uzenetFacade;
+    @EJB
+    private KeszitmenyFacade keszitmenyFacade;
+    @EJB
+    private InjekciotortenetFacade injekciotortenetFacade;
 
     private List<Orvos> allOrvos;
     private List<Uzenet> myUzenetList;
@@ -67,11 +77,16 @@ public class SingleOrvosController implements Serializable {
     private List<Uzenet> segedUzenetList;
     private HashSet<Orvos> orvosok = new HashSet<>();
     private List<Beteg> betegekForOrvos;
+    private List<Injekciotortenet> selectedInjekcioTortenetList;
+    private List<Keszitmeny> allKeszitmeny;
 
     private Orvos actOrvos;
     private Orvos kezeloOrvos;
     private Beteg selectedBeteg;
+    private Keszitmeny selectedKeszitmeny;
 
+    private String selectedNE;
+    private String selectedKeszitmenyID;
     private String selectedBetegID;
     private String felhNev = "";
     private String felhNevForChange = "";
@@ -101,6 +116,21 @@ public class SingleOrvosController implements Serializable {
         betegekForOrvos = new LinkedList<>(actOrvos.getBetegCollection());
         selectedBetegID = betegekForOrvos.get(0).getId();
         selectedBeteg = betegekForOrvos.get(0);
+        selectedInjekcioTortenetList = new LinkedList<>(selectedBeteg.getInjekciotortenetCollection());
+        allKeszitmeny = keszitmenyFacade.findAll();
+        Collections.sort(selectedInjekcioTortenetList, new Comparator<Injekciotortenet>() {
+
+            @Override
+            public int compare(Injekciotortenet o1, Injekciotortenet o2) {
+                if (o1.getKezdetdatum().getTime() == o2.getKezdetdatum().getTime()) {
+                    return 0;
+                } else {
+                    return o1.getKezdetdatum().getTime() - o2.getKezdetdatum().getTime() > 0 ? -1 : 1;
+                }
+            }
+
+        });
+        selectedKeszitmeny = allKeszitmeny.get(0);
 //        kezeloOrvos = actOrvos.getOrvosID();
 //        orvosok.add(kezeloOrvos);
 //        selectedOrvosID = kezeloOrvos.getId();
@@ -146,8 +176,66 @@ public class SingleOrvosController implements Serializable {
 
     public void updateSelectedBeteg() {
         selectedBeteg = betegFacade.getByID(selectedBetegID).get(0);
+        selectedInjekcioTortenetList = new LinkedList<>(selectedBeteg.getInjekciotortenetCollection());
+        Collections.sort(selectedInjekcioTortenetList, new Comparator<Injekciotortenet>() {
+
+            @Override
+            public int compare(Injekciotortenet o1, Injekciotortenet o2) {
+                if (o1.getKezdetdatum().getTime() == o2.getKezdetdatum().getTime()) {
+                    return 0;
+                } else {
+                    return o1.getKezdetdatum().getTime() - o2.getKezdetdatum().getTime() > 0 ? -1 : 1;
+                }
+            }
+
+        });
     }
-    
+
+    public void updateSelectedKeszitmeny() {
+        selectedKeszitmeny = keszitmenyFacade.getByID(selectedKeszitmenyID).get(0);
+
+    }
+
+    public void createInjekcioTortenet() {
+        try {
+            Integer.parseInt(selectedNE);
+        } catch (NumberFormatException e) {
+            RequestContext.getCurrentInstance().execute("PF('editInjekciotortenetDialogWidget').hide();");
+            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "WARNING", "Csak számokat adjon meg!");
+            FacesContext.getCurrentInstance().addMessage(null, msg);
+            return;
+        }
+
+        List<Injekciotortenet> seged = injekciotortenetFacade.getActualByBeteg(selectedBeteg);
+
+        Date actDate = new Date();
+
+        Injekciotortenet injekciotortenet = new Injekciotortenet(actDate, Integer.parseInt(selectedNE));
+        injekciotortenet.setBetegID(selectedBeteg);
+        injekciotortenet.setKeszitmenyID(selectedKeszitmeny);
+        if (seged != null && !seged.isEmpty()) {
+            seged.get(0).setVegedatum(actDate);
+            injekciotortenetFacade.edit(seged.get(0));
+        }
+        injekciotortenetFacade.create(injekciotortenet);
+        selectedBeteg = betegFacade.getByID(selectedBetegID).get(0);
+        selectedInjekcioTortenetList = new LinkedList<>(selectedBeteg.getInjekciotortenetCollection());
+        Collections.sort(selectedInjekcioTortenetList, new Comparator<Injekciotortenet>() {
+
+            @Override
+            public int compare(Injekciotortenet o1, Injekciotortenet o2) {
+                if (o1.getKezdetdatum().getTime() == o2.getKezdetdatum().getTime()) {
+                    return 0;
+                } else {
+                    return o1.getKezdetdatum().getTime() - o2.getKezdetdatum().getTime() > 0 ? -1 : 1;
+                }
+            }
+
+        });
+        selectedNE = null;
+        RequestContext.getCurrentInstance().execute("PF('editInjekciotortenetDialogWidget').hide();");
+    }
+
     public void initUzenetByORvos() {
 //        selectedOrvos = orvosFacade.getByID(selectedOrvosID).get(0);
 //        segedUzenetList = uzenetFacade.getByBetegAndOrvos(actOrvos, selectedOrvos);
@@ -157,7 +245,7 @@ public class SingleOrvosController implements Serializable {
             myUzenetListByOrvos = segedUzenetList.subList(uzenetStartIndex, segedUzenetList.size());
         }
     }
-    
+
     public void refreshPage() {
         initUzenetByORvos();
         try {
@@ -166,7 +254,7 @@ public class SingleOrvosController implements Serializable {
             Logger.getLogger(SingleBetegController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
+
     public StreamedContent fileDownload(String src) {
         InputStream fileInputStream = null;
         try {
@@ -222,7 +310,7 @@ public class SingleOrvosController implements Serializable {
     }
 
     public void sendMessage() {
-        if(szoveg == null || szoveg.length() == 0) {
+        if (szoveg == null || szoveg.length() == 0) {
             RequestContext.getCurrentInstance().execute("PF('uzenetDialogWidget').hide()");
             FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "WARNING", "Az üzenet nem lehet üres!");
             FacesContext.getCurrentInstance().addMessage(null, msg);
@@ -471,6 +559,46 @@ public class SingleOrvosController implements Serializable {
 
     public void setSelectedBeteg(Beteg selectedBeteg) {
         this.selectedBeteg = selectedBeteg;
+    }
+
+    public String getSelectedKeszitmenyID() {
+        return selectedKeszitmenyID;
+    }
+
+    public void setSelectedKeszitmenyID(String selectedKeszitmenyID) {
+        this.selectedKeszitmenyID = selectedKeszitmenyID;
+    }
+
+    public Keszitmeny getSelectedKeszitmeny() {
+        return selectedKeszitmeny;
+    }
+
+    public void setSelectedKeszitmeny(Keszitmeny selectedKeszitmeny) {
+        this.selectedKeszitmeny = selectedKeszitmeny;
+    }
+
+    public List<Keszitmeny> getAllKeszitmeny() {
+        return allKeszitmeny;
+    }
+
+    public void setAllKeszitmeny(List<Keszitmeny> allKeszitmeny) {
+        this.allKeszitmeny = allKeszitmeny;
+    }
+
+    public String getSelectedNE() {
+        return selectedNE;
+    }
+
+    public void setSelectedNE(String selectedNE) {
+        this.selectedNE = selectedNE;
+    }
+
+    public List<Injekciotortenet> getSelectedInjekcioTortenetList() {
+        return selectedInjekcioTortenetList;
+    }
+
+    public void setSelectedInjekcioTortenetList(List<Injekciotortenet> selectedInjekcioTortenetList) {
+        this.selectedInjekcioTortenetList = selectedInjekcioTortenetList;
     }
 
 }

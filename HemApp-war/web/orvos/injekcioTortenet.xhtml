@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:pm="http://primefaces.org/mobile">
+
+    <f:view renderKitId="PRIMEFACES_MOBILE" />
+
+    <h:head>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta content='text/html; charset=UTF-8' http-equiv="Content-Type"/>
+    </h:head>
+
+    <h:body onload="#{LoginController.pageRightCheckerForOrvos()}" style="background-color: darkgray; font-size: 0.8em">
+
+        <p:growl id="message" life="4000" showDetail="true" />
+        <pm:page id="page">
+            <p:idleMonitor timeout="#{LoginController.timeOut}">
+                <p:ajax event="idle" listener="#{LoginController.invalidateSession()}"/>
+            </p:idleMonitor>
+            <pm:header title="HemApp">
+                <h:form id="menu">
+                    <p:menu>
+                        <p:menuitem value="Menü" url="orvos.xhtml" icon="ui-icon-home" />
+                    </p:menu>
+                </h:form>
+            </pm:header>
+
+            <pm:content>
+                <h:form id="selection">
+                    <pm:field>
+                        <p:outputLabel for="selectBeteg" value="Beteg választása:" />
+                        <p:selectOneMenu id="selectBeteg" value="#{SingleOrvosController.selectedBetegID}">
+                            <p:ajax event="change" listener="#{SingleOrvosController.updateSelectedBeteg}" update=":page:tableForm"/>
+                            <f:selectItems value="#{SingleOrvosController.betegekForOrvos}" var="beteg" itemLabel="#{beteg.vezeteknev} #{beteg.keresztnev} #{beteg.taj}" itemValue="#{beteg.id}"/>
+                        </p:selectOneMenu>
+                    </pm:field>
+                    <p:commandButton value="Injekció lecserélése" onclick="PF('editInjekciotortenetDialogWidget').show()" />
+                </h:form>
+                <h:form id="tableForm">
+                    <br/>
+                    <p:dataList value="#{SingleOrvosController.selectedInjekcioTortenetList}" var="injekciotortenet">
+                        <f:facet name="header">
+                            Injekciótörténet
+                        </f:facet>
+                        <h:outputText value="#{injekciotortenet.kezdetdatum}">
+                            <f:convertDateTime pattern="yyyy. MM. dd." />
+                        </h:outputText>
+                        <h:outputText value="#{injekciotortenet.vegedatum}">
+                            <f:convertDateTime pattern="yyyy. MM. dd." />
+                        </h:outputText>
+                        <h:outputText value=", #{injekciotortenet.keszitmenyID.nev} #{injekciotortenet.mennyiseg} NE" />
+                        <f:facet name="footer">
+                            Injekciótörténet
+                        </f:facet>
+                    </p:dataList>
+                </h:form>
+
+                <p:dialog id="editInjekciotortenetDialog" widgetVar="editInjekciotortenetDialogWidget" resizable="false"
+                          header="Injekciómódosítás" style="width: max-content !important">
+                    <h:form id="editJelszoForm">
+                        <p:panelGrid columns="2">
+                            <p:outputLabel value="Válassza ki a készítményt: " />
+                            <p:selectOneMenu id="selectKeszitmeny" value="#{SingleOrvosController.selectedKeszitmenyID}">
+                                <p:ajax event="change" listener="#{SingleOrvosController.updateSelectedKeszitmeny}" update=":page:tableForm"/>
+                                <f:selectItems value="#{SingleOrvosController.allKeszitmeny}" var="keszitmeny" itemLabel="#{keszitmeny.nev}" itemValue="#{keszitmeny.id}"/>
+                            </p:selectOneMenu>
+                            <p:outputLabel value="Adja meg a mennyiséget: " />
+                            <p:inputText value="#{SingleOrvosController.selectedNE}"/>
+                        </p:panelGrid>
+                        <p:commandButton value="Mentés" actionListener="#{SingleOrvosController.createInjekcioTortenet()}" update=":page:tableForm"/>
+                    </h:form>
+                </p:dialog>
+            </pm:content>
+        </pm:page>
+    </h:body>
+
+</html>

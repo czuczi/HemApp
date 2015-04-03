@@ -5,7 +5,9 @@
  */
 package facade;
 
+import entity.Beteg;
 import entity.Injekciotortenet;
+import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -28,4 +30,7 @@ public class InjekciotortenetFacade extends AbstractFacade<Injekciotortenet> {
         super(Injekciotortenet.class);
     }
     
+    public List<Injekciotortenet> getActualByBeteg(Beteg beteg){
+        return em.createNamedQuery("Injekciotortenet.findActualByBeteg").setParameter("betegID", beteg).getResultList();
+    }
 }

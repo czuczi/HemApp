@@ -5,11 +5,9 @@
  */
 package controller;
 
-import entity.Admin;
 import entity.KeszKisz;
 import entity.Keszitmeny;
 import entity.Kiszereles;
-import facade.AdminFacade;
 import facade.KeszKiszFacade;
 import facade.KeszitmenyFacade;
 import facade.KiszerelesFacade;
