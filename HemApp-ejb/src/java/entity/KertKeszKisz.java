@@ -7,6 +7,7 @@ package entity;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.UUID;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -32,7 +33,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 @NamedQueries({
     @NamedQuery(name = "KertKeszKisz.findAll", query = "SELECT k FROM KertKeszKisz k"),
     @NamedQuery(name = "KertKeszKisz.findById", query = "SELECT k FROM KertKeszKisz k WHERE k.id = :id"),
-    @NamedQuery(name = "KertKeszKisz.findByDarab", query = "SELECT k FROM KertKeszKisz k WHERE k.darab = :darab")})
+    @NamedQuery(name = "KertKeszKisz.findByDarab", query = "SELECT k FROM KertKeszKisz k WHERE k.darab = :darab"),
+    @NamedQuery(name = "KertKeszKisz.findActual", query = "SELECT k FROM KertKeszKisz k WHERE k.idopont > :startDate ORDER BY k.idopont DESC")})
 public class KertKeszKisz implements Serializable {
     @Basic(optional = false)
     @NotNull
@@ -58,14 +60,11 @@ public class KertKeszKisz implements Serializable {
     private KeszKisz keszKiszID;
 
     public KertKeszKisz() {
+        this.id = UUID.randomUUID().toString().replaceAll("-", "");
     }
 
-    public KertKeszKisz(String id) {
-        this.id = id;
-    }
-
-    public KertKeszKisz(String id, int darab) {
-        this.id = id;
+    public KertKeszKisz(int darab) {
+        this.id = UUID.randomUUID().toString().replaceAll("-", "");
         this.darab = darab;
     }
 

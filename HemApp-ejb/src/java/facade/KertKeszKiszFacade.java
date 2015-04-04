@@ -6,6 +6,10 @@
 package facade;
 
 import entity.KertKeszKisz;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -16,6 +20,7 @@ import javax.persistence.PersistenceContext;
  */
 @Stateless
 public class KertKeszKiszFacade extends AbstractFacade<KertKeszKisz> {
+
     @PersistenceContext(unitName = "HemApp-ejbPU")
     private EntityManager em;
 
@@ -27,5 +32,11 @@ public class KertKeszKiszFacade extends AbstractFacade<KertKeszKisz> {
     public KertKeszKiszFacade() {
         super(KertKeszKisz.class);
     }
-    
+
+    public List<KertKeszKisz> getActual() {
+        Calendar cal = new GregorianCalendar();
+        cal.add(Calendar.DAY_OF_MONTH, -7);
+        Date sevenDaysAgo = cal.getTime();
+        return em.createNamedQuery("KertKeszKisz.findActual").setParameter("startDate", sevenDaysAgo).getResultList();
+    }
 }

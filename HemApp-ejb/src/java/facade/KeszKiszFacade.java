@@ -6,6 +6,7 @@
 package facade;
 
 import entity.KeszKisz;
+import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -28,4 +29,7 @@ public class KeszKiszFacade extends AbstractFacade<KeszKisz> {
         super(KeszKisz.class);
     }
     
+    public List<KeszKisz> getByID(String id) {
+        return em.createNamedQuery("KeszKisz.findById").setParameter("id", id).getResultList();
+    }
 }

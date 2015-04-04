@@ -344,7 +344,7 @@ public class SingleOrvosController implements Serializable {
         oldPassword = newPassword = "";
         RequestContext.getCurrentInstance().update("editJelszoForm");
         RequestContext.getCurrentInstance().reset("page:editJelszoForm:");
-        RequestContext.getCurrentInstance().execute("PF('editJelszoDialogWidget').hide()");
+        RequestContext.getCurrentInstance().execute("PF('editJelszoDialogWidget').hide();");
     }
 
     public void editOrvos() {
@@ -374,7 +374,7 @@ public class SingleOrvosController implements Serializable {
         init2();
         RequestContext.getCurrentInstance().update("tableForm");
         RequestContext.getCurrentInstance().update("editBetegForm");
-        RequestContext.getCurrentInstance().execute("PF('editBetegDialogWidget').hide()");
+        RequestContext.getCurrentInstance().execute("PF('editBetegDialogWidget').hide();");
     }
 
     public Orvos getActOrvos() {
