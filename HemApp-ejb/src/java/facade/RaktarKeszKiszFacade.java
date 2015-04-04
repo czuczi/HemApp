@@ -5,7 +5,10 @@
  */
 package facade;
 
+import entity.KeszKisz;
+import entity.Orvos;
 import entity.RaktarKeszKisz;
+import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -28,4 +31,7 @@ public class RaktarKeszKiszFacade extends AbstractFacade<RaktarKeszKisz> {
         super(RaktarKeszKisz.class);
     }
     
+    public List<RaktarKeszKisz> getByOrvosKeszKiszSorozatszam(Orvos orvos, KeszKisz keszKisz, String sorozatszam) {
+        return em.createNamedQuery("RaktarKeszKisz.findByOrvosKeszKiszSorozat").setParameter("orvos", orvos).setParameter("keszKisz", keszKisz).setParameter("sorozatszam", sorozatszam).getResultList();
+    }
 }

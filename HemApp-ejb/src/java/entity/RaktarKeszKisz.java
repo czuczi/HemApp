@@ -6,6 +6,7 @@
 package entity;
 
 import java.io.Serializable;
+import java.util.UUID;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -30,7 +31,8 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "RaktarKeszKisz.findAll", query = "SELECT r FROM RaktarKeszKisz r"),
     @NamedQuery(name = "RaktarKeszKisz.findById", query = "SELECT r FROM RaktarKeszKisz r WHERE r.id = :id"),
     @NamedQuery(name = "RaktarKeszKisz.findBySorozatszam", query = "SELECT r FROM RaktarKeszKisz r WHERE r.sorozatszam = :sorozatszam"),
-    @NamedQuery(name = "RaktarKeszKisz.findByDarab", query = "SELECT r FROM RaktarKeszKisz r WHERE r.darab = :darab")})
+    @NamedQuery(name = "RaktarKeszKisz.findByDarab", query = "SELECT r FROM RaktarKeszKisz r WHERE r.darab = :darab"),
+    @NamedQuery(name = "RaktarKeszKisz.findByOrvosKeszKiszSorozat", query = "SELECT r FROM RaktarKeszKisz r WHERE r.keszKiszID = :keszKisz AND r.orvosID = :orvos AND r.sorozatszam = :sorozatszam")})
 public class RaktarKeszKisz implements Serializable {
     @JoinColumn(name = "Orvos_ID", referencedColumnName = "ID")
     @ManyToOne(optional = false)
@@ -56,14 +58,11 @@ public class RaktarKeszKisz implements Serializable {
     private KeszKisz keszKiszID;
 
     public RaktarKeszKisz() {
+        this.id = UUID.randomUUID().toString().replaceAll("-", "");
     }
 
-    public RaktarKeszKisz(String id) {
-        this.id = id;
-    }
-
-    public RaktarKeszKisz(String id, String sorozatszam, int darab) {
-        this.id = id;
+    public RaktarKeszKisz(String sorozatszam, int darab) {
+        this.id = UUID.randomUUID().toString().replaceAll("-", "");
         this.sorozatszam = sorozatszam;
         this.darab = darab;
     }

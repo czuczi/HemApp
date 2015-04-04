@@ -8,9 +8,13 @@ package controller;
 import entity.KertKeszKisz;
 import entity.KeszKisz;
 import entity.Kiszereles;
+import entity.Orvos;
+import entity.RaktarKeszKisz;
 import facade.InjekciotortenetFacade;
 import facade.KertKeszKiszFacade;
 import facade.KeszKiszFacade;
+import facade.OrvosFacade;
+import facade.RaktarKeszKiszFacade;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.LinkedList;
@@ -30,62 +34,67 @@ import org.primefaces.context.RequestContext;
  * @author gczuczor
  */
 @Stateless
-@ManagedBean(name = "KeszitmenyKeresController")
+@ManagedBean(name = "RaktarKeszKiszController")
 @SessionScoped
-public class KeszitmenyKeresController implements Serializable {
+public class RaktarKeszKiszController implements Serializable {
     
     @ManagedProperty("#{LoginController}")
     private LoginController loginController;
     
     @EJB
-    private InjekciotortenetFacade injekciotortenetFacade;
-    @EJB
     private KeszKiszFacade keszKiszFacade;
     @EJB
-    private KertKeszKiszFacade kertKeszKiszFacade;
+    private RaktarKeszKiszFacade raktarKeszKiszFacade;
+    @EJB
+    private OrvosFacade orvosFacade;
     
     private List<KeszKisz> keszKiszList;
-    private List<KertKeszKisz> kertKeszKiszList;
+    private List<RaktarKeszKisz> raktarKeszKiszList;
     
     private KeszKisz selectedKeszKisz;
     
     private String selectedKeszKiszID;
     private String selectedDarabSzam;
-    private Date selectedDate;
+    private String selectedSorozatszam;
     
     @PostConstruct
     public void init() {
-        keszKiszList = new LinkedList<>(injekciotortenetFacade.getActualByBeteg(loginController.getBeteg()).get(0).getKeszitmenyID().getKeszKiszCollection());
+        keszKiszList = keszKiszFacade.findAll();
         selectedKeszKisz = keszKiszList.get(0);
-        selectedDate = new Date();
-        kertKeszKiszList = kertKeszKiszFacade.getActual();
+        raktarKeszKiszList = new LinkedList<>(loginController.getOrvos().getRaktarKeszKiszCollection());
     }
     
-    public void createKeres() {
+    public void felvetel() {
         try {
             Integer.parseInt(selectedDarabSzam);
         } catch (NumberFormatException e) {
-            RequestContext.getCurrentInstance().execute("PF('keresDialogWidget').hide();");
+            RequestContext.getCurrentInstance().execute("PF('raktarDialogWidget').hide();");
             FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "WARNING", "Csak számokat adjon meg a darabszámnál!");
             FacesContext.getCurrentInstance().addMessage(null, msg);
             return;
         }
-        
-        if(selectedDate.getTime() < new Date().getTime()) {
-            RequestContext.getCurrentInstance().execute("PF('keresDialogWidget').hide();");
-            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "WARNING", "Csak jövőbeni időpontot adhat meg!");
+        if(selectedSorozatszam == null || selectedSorozatszam.length() == 0) {
+            RequestContext.getCurrentInstance().execute("PF('raktarDialogWidget').hide();");
+            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "WARNING", "A sorozatszám megadása kötelező!");
             FacesContext.getCurrentInstance().addMessage(null, msg);
             return;
         }
-        KertKeszKisz kertKeszKisz = new KertKeszKisz(Integer.parseInt(selectedDarabSzam));
-        kertKeszKisz.setKeszKiszID(selectedKeszKisz);
-        kertKeszKisz.setBetegID(loginController.getBeteg());
-        kertKeszKisz.setIdopont(selectedDate);
-        kertKeszKiszFacade.create(kertKeszKisz);
-        kertKeszKiszList = kertKeszKiszFacade.getActual();
-        selectedDarabSzam = null;
-        selectedDate = new Date();
-        RequestContext.getCurrentInstance().execute("PF('keresDialogWidget').hide();");
+        RaktarKeszKisz raktarKeszKisz;
+        List<RaktarKeszKisz> seged = raktarKeszKiszFacade.getByOrvosKeszKiszSorozatszam(loginController.getOrvos(), selectedKeszKisz, selectedSorozatszam);
+        if(seged != null && !seged.isEmpty()) {
+            raktarKeszKisz = seged.get(0);
+            raktarKeszKisz.setDarab(raktarKeszKisz.getDarab() + Integer.parseInt(selectedDarabSzam));
+            raktarKeszKiszFacade.edit(raktarKeszKisz);
+        } else {
+            raktarKeszKisz = new RaktarKeszKisz(selectedSorozatszam, Integer.parseInt(selectedDarabSzam));
+            raktarKeszKisz.setOrvosID(loginController.getOrvos());
+            raktarKeszKisz.setKeszKiszID(selectedKeszKisz);
+            raktarKeszKiszFacade.create(raktarKeszKisz);
+        }
+        selectedDarabSzam = selectedDarabSzam = null;
+        Orvos orvos = orvosFacade.getByID(loginController.getOrvos().getId()).get(0);
+        raktarKeszKiszList = new LinkedList<>(orvos.getRaktarKeszKiszCollection());
+        RequestContext.getCurrentInstance().execute("PF('raktarDialogWidget').hide();");
     }
     
     public void updateSelectedKeszKisz() {
@@ -124,20 +133,20 @@ public class KeszitmenyKeresController implements Serializable {
         this.selectedDarabSzam = selectedDarabSzam;
     }
 
-    public Date getSelectedDate() {
-        return selectedDate;
+    public String getSelectedSorozatszam() {
+        return selectedSorozatszam;
     }
 
-    public void setSelectedDate(Date selectedDate) {
-        this.selectedDate = selectedDate;
+    public void setSelectedSorozatszam(String selectedSorozatszam) {
+        this.selectedSorozatszam = selectedSorozatszam;
     }
 
-    public List<KertKeszKisz> getKertKeszKiszList() {
-        return kertKeszKiszList;
+    public List<RaktarKeszKisz> getRaktarKeszKiszList() {
+        return raktarKeszKiszList;
     }
 
-    public void setKertKeszKiszList(List<KertKeszKisz> kertKeszKiszList) {
-        this.kertKeszKiszList = kertKeszKiszList;
+    public void setRaktarKeszKiszList(List<RaktarKeszKisz> raktarKeszKiszList) {
+        this.raktarKeszKiszList = raktarKeszKiszList;
     }
 
     public LoginController getLoginController() {
