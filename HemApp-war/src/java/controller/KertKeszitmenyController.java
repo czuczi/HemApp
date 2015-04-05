@@ -5,9 +5,11 @@
  */
 package controller;
 
+import entity.Beteg;
 import entity.KertKeszKisz;
 import entity.KeszKisz;
 import entity.Kiszereles;
+import facade.BetegFacade;
 import facade.InjekciotortenetFacade;
 import facade.KertKeszKiszFacade;
 import facade.KeszKiszFacade;
@@ -30,74 +32,41 @@ import org.primefaces.context.RequestContext;
  * @author gczuczor
  */
 @Stateless
-@ManagedBean(name = "KeszitmenyKeresController")
+@ManagedBean(name = "KertKeszitmenyController")
 @SessionScoped
-public class KeszitmenyKeresController implements Serializable {
+public class KertKeszitmenyController implements Serializable {
     
     @ManagedProperty("#{LoginController}")
     private LoginController loginController;
     
     @EJB
-    private InjekciotortenetFacade injekciotortenetFacade;
-    @EJB
-    private KeszKiszFacade keszKiszFacade;
-    @EJB
     private KertKeszKiszFacade kertKeszKiszFacade;
+    @EJB
+    private BetegFacade betegFacade;
     
-    private List<KeszKisz> keszKiszList;
     private List<KertKeszKisz> kertKeszKiszList;
+    private List<Beteg> betegekForOrvos;
     
     private KeszKisz selectedKeszKisz;
+    private Beteg selectedBeteg;
     
+    private String selectedBetegID;
     private String selectedKeszKiszID;
     private String selectedDarabSzam;
     private Date selectedDate;
     
     @PostConstruct
     public void init() {
-        keszKiszList = new LinkedList<>(injekciotortenetFacade.getActualByBeteg(loginController.getBeteg()).get(0).getKeszitmenyID().getKeszKiszCollection());
-        selectedKeszKisz = keszKiszList.get(0);
+        betegekForOrvos = new LinkedList<>(loginController.getOrvos().getBetegCollection());
+        selectedBeteg = betegekForOrvos.get(0);
+        selectedBetegID = selectedBeteg.getId();
         selectedDate = new Date();
-        kertKeszKiszList = kertKeszKiszFacade.getActualByBeteg(loginController.getBeteg());
-    }
-    
-    public void createKeres() {
-        try {
-            Integer.parseInt(selectedDarabSzam);
-        } catch (NumberFormatException e) {
-            RequestContext.getCurrentInstance().execute("PF('keresDialogWidget').hide();");
-            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "WARNING", "Csak számokat adjon meg a darabszámnál!");
-            FacesContext.getCurrentInstance().addMessage(null, msg);
-            return;
-        }
-        
-        if(selectedDate.getTime() < new Date().getTime()) {
-            RequestContext.getCurrentInstance().execute("PF('keresDialogWidget').hide();");
-            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "WARNING", "Csak jövőbeni időpontot adhat meg!");
-            FacesContext.getCurrentInstance().addMessage(null, msg);
-            return;
-        }
-        KertKeszKisz kertKeszKisz = new KertKeszKisz(Integer.parseInt(selectedDarabSzam));
-        kertKeszKisz.setKeszKiszID(selectedKeszKisz);
-        kertKeszKisz.setBetegID(loginController.getBeteg());
-        kertKeszKisz.setIdopont(selectedDate);
-        kertKeszKiszFacade.create(kertKeszKisz);
-        kertKeszKiszList = kertKeszKiszFacade.getActualByBeteg(loginController.getBeteg());
-        selectedDarabSzam = null;
-        selectedDate = new Date();
-        RequestContext.getCurrentInstance().execute("PF('keresDialogWidget').hide();");
-    }
-    
-    public void updateSelectedKeszKisz() {
-        selectedKeszKisz = keszKiszFacade.getByID(selectedKeszKiszID).get(0);
+        kertKeszKiszList = kertKeszKiszFacade.getActualByBeteg(selectedBeteg);
     }
 
-    public List<KeszKisz> getKeszKiszList() {
-        return keszKiszList;
-    }
-
-    public void setKeszKiszList(List<KeszKisz> keszKiszList) {
-        this.keszKiszList = keszKiszList;
+    public void updateSelectedBeteg() {
+        selectedBeteg = betegFacade.getByID(selectedBetegID).get(0);
+        kertKeszKiszList = kertKeszKiszFacade.getActualByBeteg(selectedBeteg);
     }
 
     public String getSelectedKeszKiszID() {
@@ -146,6 +115,30 @@ public class KeszitmenyKeresController implements Serializable {
 
     public void setLoginController(LoginController loginController) {
         this.loginController = loginController;
+    }
+
+    public List<Beteg> getBetegekForOrvos() {
+        return betegekForOrvos;
+    }
+
+    public void setBetegekForOrvos(List<Beteg> betegekForOrvos) {
+        this.betegekForOrvos = betegekForOrvos;
+    }
+
+    public Beteg getSelectedBeteg() {
+        return selectedBeteg;
+    }
+
+    public void setSelectedBeteg(Beteg selectedBeteg) {
+        this.selectedBeteg = selectedBeteg;
+    }
+
+    public String getSelectedBetegID() {
+        return selectedBetegID;
+    }
+
+    public void setSelectedBetegID(String selectedBetegID) {
+        this.selectedBetegID = selectedBetegID;
     }
     
 }

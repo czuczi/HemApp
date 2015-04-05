@@ -34,7 +34,7 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "KertKeszKisz.findAll", query = "SELECT k FROM KertKeszKisz k"),
     @NamedQuery(name = "KertKeszKisz.findById", query = "SELECT k FROM KertKeszKisz k WHERE k.id = :id"),
     @NamedQuery(name = "KertKeszKisz.findByDarab", query = "SELECT k FROM KertKeszKisz k WHERE k.darab = :darab"),
-    @NamedQuery(name = "KertKeszKisz.findActual", query = "SELECT k FROM KertKeszKisz k WHERE k.idopont > :startDate ORDER BY k.idopont DESC")})
+    @NamedQuery(name = "KertKeszKisz.findActualByBeteg", query = "SELECT k FROM KertKeszKisz k WHERE k.betegID = :beteg AND k.idopont > :startDate ORDER BY k.idopont DESC")})
 public class KertKeszKisz implements Serializable {
     @Basic(optional = false)
     @NotNull

@@ -5,6 +5,7 @@
  */
 package facade;
 
+import entity.Beteg;
 import entity.KertKeszKisz;
 import java.util.Calendar;
 import java.util.Date;
@@ -33,10 +34,10 @@ public class KertKeszKiszFacade extends AbstractFacade<KertKeszKisz> {
         super(KertKeszKisz.class);
     }
 
-    public List<KertKeszKisz> getActual() {
+    public List<KertKeszKisz> getActualByBeteg(Beteg beteg) {
         Calendar cal = new GregorianCalendar();
         cal.add(Calendar.DAY_OF_MONTH, -7);
         Date sevenDaysAgo = cal.getTime();
-        return em.createNamedQuery("KertKeszKisz.findActual").setParameter("startDate", sevenDaysAgo).getResultList();
+        return em.createNamedQuery("KertKeszKisz.findActualByBeteg").setParameter("startDate", sevenDaysAgo).setParameter("beteg", beteg).getResultList();
     }
 }
