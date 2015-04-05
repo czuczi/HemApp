@@ -38,4 +38,8 @@ public class UzenetFacade extends AbstractFacade<Uzenet> {
     public List<Uzenet> getByBetegAndOrvos(Beteg beteg, Orvos orvos) {
         return em.createNamedQuery("Uzenet.findByBetegAndOrvos").setParameter("betegID", beteg).setParameter("orvosID", orvos).getResultList();
     }
+    
+    public List<Orvos> getOrvosListByBeteg(Beteg beteg) {
+        return em.createNamedQuery("Uzenet.findOrvosListByBeteg").setParameter("betegID", beteg).getResultList();
+    }
 }

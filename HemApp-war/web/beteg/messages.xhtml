@@ -73,7 +73,7 @@
                             </center>
                         </f:facet>
                         <p:outputPanel id="uzenetOutputPanel">
-                            <p:commandButton style="width: 100px !important; font-size: 0.8em" value="Csatolt kép" ajax="false">
+                            <p:commandButton style="width: 100px !important; font-size: 0.8em" rendered="#{uzenet.kepLink != null}" value="Csatolt kép" ajax="false">
                                 <p:fileDownload value="#{SingleBetegController.fileDownload(uzenet.kepLink)}" />
                             </p:commandButton>
                             <p>#{uzenet.szoveg}</p>

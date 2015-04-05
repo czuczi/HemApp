@@ -52,29 +52,29 @@
             </pm:header>
 
             <pm:content>
-                <h:form id="selection" rendered="#{SingleBetegController.orvosok.size() > 1}">
+                <h:form id="selection">
                     <pm:field>
-                        <p:outputLabel for="selectOrvos" value="Orvos választása:" />
-                        <p:selectOneMenu id="selectOrvos" value="#{SingleBetegController.selectedOrvosID}">
-                            <p:ajax event="change" listener="#{SingleBetegController.refreshPage()}"/>
-                            <f:selectItems value="#{SingleBetegController.orvosok}" var="orvos" itemLabel="#{orvos.vezeteknev} #{orvos.keresztnev}" itemValue="#{orvos.id}"/>
+                        <p:outputLabel for="selectBeteg" value="Beteg választása:" />
+                        <p:selectOneMenu id="selectBeteg" value="#{SingleOrvosController.selectedBetegID}">
+                            <p:ajax event="change" listener="#{SingleOrvosController.refreshPage()}"/>
+                            <f:selectItems value="#{SingleOrvosController.betegekForOrvos}" var="beteg" itemLabel="#{beteg.vezeteknev} #{beteg.keresztnev} #{beteg.taj}" itemValue="#{beteg.id}"/>
                         </p:selectOneMenu>
                     </pm:field>
                 </h:form>
                 <h:form id="uzenetek">
-                    <p:commandButton value="Új üzenet" onclick="PF('uzenetDialogWidget').show()" rendered="#{SingleBetegController.actBeteg.orvosID.id.equals(SingleBetegController.selectedOrvosID)}"/>
+                    <p:commandButton value="Új üzenet" onclick="PF('uzenetDialogWidget').show()"/>
                     <br/>
-                    <p:dataList value="#{SingleBetegController.myUzenetListByOrvos}" var="uzenet" id="uzenetDataList">
+                    <p:dataList value="#{SingleOrvosController.myUzenetListByBeteg}" var="uzenet" id="uzenetDataList">
                         <f:facet name="header">
                             <center>
-                                <p:commandButton class="ui-datepicker-prev ui-corner-all ui-btn ui-btn-icon-notext ui-btn-inline ui-icon-arrow-l ui-shadow" actionListener="#{SingleBetegController.decreaseStartIndex()}"/>
-                                <p:outputLabel id="uzenetSzamLabel" style="display: inline !important" value="Üzenetek #{SingleBetegController.segedUzenetList.size() > 4 ? SingleBetegController.uzenetStartIndex + 5 : SingleBetegController.segedUzenetList.size()}/#{SingleBetegController.segedUzenetList.size()} "/>
-                                <p:commandButton class="ui-datepicker-next ui-corner-all ui-btn ui-btn-icon-notext ui-btn-inline ui-icon-arrow-r ui-shadow" actionListener="#{SingleBetegController.increaseStartIndex()}"/>
+                                <p:commandButton class="ui-datepicker-prev ui-corner-all ui-btn ui-btn-icon-notext ui-btn-inline ui-icon-arrow-l ui-shadow" actionListener="#{SingleOrvosController.decreaseStartIndex()}"/>
+                                <p:outputLabel id="uzenetSzamLabel" style="display: inline !important" value="Üzenetek #{SingleOrvosController.segedUzenetList.size() > 4 ? SingleOrvosController.uzenetStartIndex + 5 : SingleOrvosController.segedUzenetList.size()}/#{SingleOrvosController.segedUzenetList.size()} "/>
+                                <p:commandButton class="ui-datepicker-next ui-corner-all ui-btn ui-btn-icon-notext ui-btn-inline ui-icon-arrow-r ui-shadow" actionListener="#{SingleOrvosController.increaseStartIndex()}"/>
                             </center>
                         </f:facet>
                         <p:outputPanel id="uzenetOutputPanel">
-                            <p:commandButton style="width: 100px !important; font-size: 0.8em" value="Csatolt kép" ajax="false">
-                                <p:fileDownload value="#{SingleBetegController.fileDownload(uzenet.kepLink)}" />
+                            <p:commandButton style="width: 100px !important; font-size: 0.8em" value="Csatolt kép" rendered="#{uzenet.kepLink != null}" ajax="false">
+                                <p:fileDownload value="#{SingleOrvosController.fileDownload(uzenet.kepLink)}" />
                             </p:commandButton>
                             <p>#{uzenet.szoveg}</p>
                             <p class="ui-li-aside">
@@ -87,9 +87,9 @@
                         </p:outputPanel>
                         <f:facet name="footer">
                             <center>
-                                <p:commandButton class="ui-datepicker-prev ui-corner-all ui-btn ui-btn-icon-notext ui-btn-inline ui-icon-arrow-l ui-shadow" actionListener="#{SingleBetegController.decreaseStartIndex()}"/>
-                                <p:outputLabel id="uzenetSzamLabel2" style="display: inline !important" value="Üzenetek #{SingleBetegController.segedUzenetList.size() > 4 ? SingleBetegController.uzenetStartIndex + 5 : SingleBetegController.segedUzenetList.size()}/#{SingleBetegController.segedUzenetList.size()} "/>
-                                <p:commandButton class="ui-datepicker-next ui-corner-all ui-btn ui-btn-icon-notext ui-btn-inline ui-icon-arrow-r ui-shadow" actionListener="#{SingleBetegController.increaseStartIndex()}"/>
+                                <p:commandButton class="ui-datepicker-prev ui-corner-all ui-btn ui-btn-icon-notext ui-btn-inline ui-icon-arrow-l ui-shadow" actionListener="#{SingleOrvosController.decreaseStartIndex()}"/>
+                                <p:outputLabel id="uzenetSzamLabel2" style="display: inline !important" value="Üzenetek #{SingleOrvosController.segedUzenetList.size() > 4 ? SingleOrvosController.uzenetStartIndex + 5 : SingleOrvosController.segedUzenetList.size()}/#{SingleOrvosController.segedUzenetList.size()} "/>
+                                <p:commandButton class="ui-datepicker-next ui-corner-all ui-btn ui-btn-icon-notext ui-btn-inline ui-icon-arrow-r ui-shadow" actionListener="#{SingleOrvosController.increaseStartIndex()}"/>
                             </center>
                         </f:facet>
                     </p:dataList>
@@ -98,16 +98,16 @@
                           header="Üzenet" style="width: max-content !important">
                     <h:form id="uzenetForm" enctype="multipart/form-data">
                         <p:growl showDetail="true"/>
-                        <p:fileUpload fileUploadListener="#{SingleBetegController.handleFileUpload}"/>
+                        <p:fileUpload fileUploadListener="#{SingleOrvosController.handleFileUpload}"/>
                         <p:panelGrid columns="2">
                             <p:outputLabel value="Üzenet: "/>
                             <p:column>
-                                <p:inputTextarea id="textarea" maxlength="10" value="#{SingleBetegController.szoveg}" onkeypress="maxLengthChecker(this, event);" onkeyup="counterSetter(this);">
+                                <p:inputTextarea id="textarea" maxlength="10" value="#{SingleOrvosController.szoveg}" onkeypress="maxLengthChecker(this, event);" onkeyup="counterSetter(this);">
                                 </p:inputTextarea>
                                 <p:outputLabel id="counterText" style="font-size: 0.8em" value="1000 karakter van hátra." />
                             </p:column>
                         </p:panelGrid>
-                        <p:commandButton value="Elküld" actionListener="#{SingleBetegController.sendMessage()}" ajax="false"/>
+                        <p:commandButton value="Elküld" actionListener="#{SingleOrvosController.sendMessage()}" ajax="false"/>
                     </h:form>
                 </p:dialog>
             </pm:content>

@@ -61,7 +61,6 @@ public class SingleBetegController implements Serializable {
     private UzenetFacade uzenetFacade;
 
     private List<Beteg> allBeteg;
-    private List<Uzenet> myUzenetList;
     private List<Uzenet> myUzenetListByOrvos;
     private List<Uzenet> segedUzenetList;
     private HashSet<Orvos> orvosok = new HashSet<>();
@@ -100,25 +99,18 @@ public class SingleBetegController implements Serializable {
         orvosok.add(kezeloOrvos);
         selectedOrvosID = kezeloOrvos.getId();
         selectedOrvos = kezeloOrvos;
-        initUzenetByORvos();
-        initUzenet();
+        initUzenetByOrvos();
+        orvosok.addAll(uzenetFacade.getOrvosListByBeteg(actBeteg));
     }
 
     public void init2() {
         allBeteg = betegFacade.findAll();
     }
 
-    public void initUzenet() {
-        myUzenetList = uzenetFacade.getByBeteg(actBeteg);
-        for (Uzenet uzenet : myUzenetList) {
-            orvosok.add(uzenet.getOrvosID());
-        }
-    }
-
     public void decreaseStartIndex() {
         if (uzenetStartIndex > 0) {
             uzenetStartIndex--;
-            initUzenetByORvos();
+            initUzenetByOrvos();
             RequestContext.getCurrentInstance().update("page:uzenetek:uzenetDataList:uzenetSzamLabel");
             RequestContext.getCurrentInstance().update("page:uzenetek:uzenetDataList:uzenetSzamLabel2");
             for (int i = 0; i < 5; i++) {
@@ -130,7 +122,7 @@ public class SingleBetegController implements Serializable {
     public void increaseStartIndex() {
         if (uzenetStartIndex < segedUzenetList.size() - 5) {
             uzenetStartIndex++;
-            initUzenetByORvos();
+            initUzenetByOrvos();
             RequestContext.getCurrentInstance().update("page:uzenetek:uzenetDataList:uzenetSzamLabel");
             RequestContext.getCurrentInstance().update("page:uzenetek:uzenetDataList:uzenetSzamLabel2");
             for (int i = 0; i < 5; i++) {
@@ -139,7 +131,7 @@ public class SingleBetegController implements Serializable {
         }
     }
 
-    public void initUzenetByORvos() {
+    public void initUzenetByOrvos() {
         selectedOrvos = orvosFacade.getByID(selectedOrvosID).get(0);
         segedUzenetList = uzenetFacade.getByBetegAndOrvos(actBeteg, selectedOrvos);
         if (segedUzenetList.size() > uzenetStartIndex + 5) {
@@ -150,7 +142,7 @@ public class SingleBetegController implements Serializable {
     }
     
     public void refreshPage() {
-        initUzenetByORvos();
+        initUzenetByOrvos();
         try {
             FacesContext.getCurrentInstance().getExternalContext().redirect("./messages.xhtml");
         } catch (IOException ex) {
@@ -225,7 +217,7 @@ public class SingleBetegController implements Serializable {
         }
         uzenetFacade.create(new Uzenet(new Date(System.currentTimeMillis()), szoveg, kepLink, actBeteg, kezeloOrvos));
         szoveg = kepLink = null;
-        initUzenetByORvos();
+        initUzenetByOrvos();
     }
 
     public String logout() {

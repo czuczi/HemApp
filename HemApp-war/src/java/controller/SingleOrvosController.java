@@ -72,16 +72,13 @@ public class SingleOrvosController implements Serializable {
     private InjekciotortenetFacade injekciotortenetFacade;
 
     private List<Orvos> allOrvos;
-    private List<Uzenet> myUzenetList;
-    private List<Uzenet> myUzenetListByOrvos;
+    private List<Uzenet> myUzenetListByBeteg;
     private List<Uzenet> segedUzenetList;
-    private HashSet<Orvos> orvosok = new HashSet<>();
     private List<Beteg> betegekForOrvos;
     private List<Injekciotortenet> selectedInjekcioTortenetList;
     private List<Keszitmeny> allKeszitmeny;
 
     private Orvos actOrvos;
-    private Orvos kezeloOrvos;
     private Beteg selectedBeteg;
     private Keszitmeny selectedKeszitmeny;
 
@@ -108,7 +105,7 @@ public class SingleOrvosController implements Serializable {
 
     @PostConstruct
     public void init() {
-        init2();
+        initAllOrvos();
         actOrvos = loginController.getOrvos();
         felhNevForChange = actOrvos.getFelhnev();
         emailForChange = actOrvos.getEmail();
@@ -131,29 +128,27 @@ public class SingleOrvosController implements Serializable {
 
         });
         selectedKeszitmeny = allKeszitmeny.get(0);
-//        kezeloOrvos = actOrvos.getOrvosID();
-//        orvosok.add(kezeloOrvos);
-//        selectedOrvosID = kezeloOrvos.getId();
-//        selectedOrvos = kezeloOrvos;
-//        initUzenetByORvos();
-//        initUzenet();
+        initUzenetByBeteg();
     }
 
-    public void init2() {
+    public void initAllOrvos() {
         allOrvos = orvosFacade.findAll();
     }
 
-    public void initUzenet() {
-//        myUzenetList = uzenetFacade.getByBeteg(actOrvos);
-        for (Uzenet uzenet : myUzenetList) {
-            orvosok.add(uzenet.getOrvosID());
+    public void initUzenetByBeteg() {
+        selectedBeteg = betegFacade.getByID(selectedBetegID).get(0);
+        segedUzenetList = uzenetFacade.getByBetegAndOrvos(selectedBeteg, actOrvos);
+        if (segedUzenetList.size() > uzenetStartIndex + 5) {
+            myUzenetListByBeteg = segedUzenetList.subList(uzenetStartIndex, uzenetStartIndex + 5);
+        } else {
+            myUzenetListByBeteg = segedUzenetList.subList(uzenetStartIndex, segedUzenetList.size());
         }
     }
 
     public void decreaseStartIndex() {
         if (uzenetStartIndex > 0) {
             uzenetStartIndex--;
-            initUzenetByORvos();
+            initUzenetByBeteg();
             RequestContext.getCurrentInstance().update("page:uzenetek:uzenetDataList:uzenetSzamLabel");
             RequestContext.getCurrentInstance().update("page:uzenetek:uzenetDataList:uzenetSzamLabel2");
             for (int i = 0; i < 5; i++) {
@@ -165,7 +160,7 @@ public class SingleOrvosController implements Serializable {
     public void increaseStartIndex() {
         if (uzenetStartIndex < segedUzenetList.size() - 5) {
             uzenetStartIndex++;
-            initUzenetByORvos();
+            initUzenetByBeteg();
             RequestContext.getCurrentInstance().update("page:uzenetek:uzenetDataList:uzenetSzamLabel");
             RequestContext.getCurrentInstance().update("page:uzenetek:uzenetDataList:uzenetSzamLabel2");
             for (int i = 0; i < 5; i++) {
@@ -236,18 +231,8 @@ public class SingleOrvosController implements Serializable {
         RequestContext.getCurrentInstance().execute("PF('editInjekciotortenetDialogWidget').hide();");
     }
 
-    public void initUzenetByORvos() {
-//        selectedOrvos = orvosFacade.getByID(selectedOrvosID).get(0);
-//        segedUzenetList = uzenetFacade.getByBetegAndOrvos(actOrvos, selectedOrvos);
-        if (segedUzenetList.size() > uzenetStartIndex + 5) {
-            myUzenetListByOrvos = segedUzenetList.subList(uzenetStartIndex, uzenetStartIndex + 5);
-        } else {
-            myUzenetListByOrvos = segedUzenetList.subList(uzenetStartIndex, segedUzenetList.size());
-        }
-    }
-
     public void refreshPage() {
-        initUzenetByORvos();
+        initUzenetByBeteg();
         try {
             FacesContext.getCurrentInstance().getExternalContext().redirect("./messages.xhtml");
         } catch (IOException ex) {
@@ -320,9 +305,9 @@ public class SingleOrvosController implements Serializable {
             badFileFormat = false;
             return;
         }
-//        uzenetFacade.create(new Uzenet(new Date(System.currentTimeMillis()), szoveg, kepLink, actOrvos, kezeloOrvos));
+        uzenetFacade.create(new Uzenet(new Date(System.currentTimeMillis()), szoveg, kepLink, selectedBeteg, actOrvos));
         szoveg = kepLink = null;
-        initUzenetByORvos();
+        initUzenetByBeteg();
     }
 
     public String logout() {
@@ -371,7 +356,7 @@ public class SingleOrvosController implements Serializable {
         orvosFacade.edit(actOrvos);
         loginController.setOrvos(actOrvos);
         loginController.setFelhNev(actOrvos.getFelhnev());
-        init2();
+        initAllOrvos();
         RequestContext.getCurrentInstance().update("tableForm");
         RequestContext.getCurrentInstance().update("editBetegForm");
         RequestContext.getCurrentInstance().execute("PF('editBetegDialogWidget').hide();");
@@ -489,28 +474,12 @@ public class SingleOrvosController implements Serializable {
         this.loginController = loginController;
     }
 
-    public Orvos getKezeloOrvos() {
-        return kezeloOrvos;
+    public List<Uzenet> getMyUzenetListByBeteg() {
+        return myUzenetListByBeteg;
     }
 
-    public void setKezeloOrvos(Orvos kezeloOrvos) {
-        this.kezeloOrvos = kezeloOrvos;
-    }
-
-    public List<Uzenet> getMyUzenetListByOrvos() {
-        return myUzenetListByOrvos;
-    }
-
-    public void setMyUzenetListByOrvos(List<Uzenet> myUzenetListByOrvos) {
-        this.myUzenetListByOrvos = myUzenetListByOrvos;
-    }
-
-    public HashSet<Orvos> getOrvosok() {
-        return orvosok;
-    }
-
-    public void setOrvosok(HashSet<Orvos> orvosok) {
-        this.orvosok = orvosok;
+    public void setMyUzenetListByBeteg(List<Uzenet> myUzenetListByBeteg) {
+        this.myUzenetListByBeteg = myUzenetListByBeteg;
     }
 
     public String getSelectedBetegID() {

@@ -37,6 +37,7 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "Uzenet.findBySzoveg", query = "SELECT u FROM Uzenet u WHERE u.szoveg = :szoveg"),
     @NamedQuery(name = "Uzenet.findByKepLink", query = "SELECT u FROM Uzenet u WHERE u.kepLink = :kepLink"),
     @NamedQuery(name = "Uzenet.findByBeteg", query = "SELECT u FROM Uzenet u WHERE u.betegID = :betegID ORDER BY u.idopont DESC"),
+    @NamedQuery(name = "Uzenet.findOrvosListByBeteg", query = "SELECT DISTINCT u.orvosID FROM Uzenet u WHERE u.betegID = :betegID"),
     @NamedQuery(name = "Uzenet.findByBetegAndOrvos", query = "SELECT u FROM Uzenet u WHERE u.betegID = :betegID AND u.orvosID = :orvosID ORDER BY u.idopont DESC")})
 public class Uzenet implements Serializable {
     private static final long serialVersionUID = 1L;
