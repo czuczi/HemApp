@@ -6,6 +6,7 @@
 package entity;
 
 import java.io.Serializable;
+import java.util.UUID;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -30,6 +31,7 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "OtthonKeszKisz.findAll", query = "SELECT o FROM OtthonKeszKisz o"),
     @NamedQuery(name = "OtthonKeszKisz.findById", query = "SELECT o FROM OtthonKeszKisz o WHERE o.id = :id"),
     @NamedQuery(name = "OtthonKeszKisz.findBySorozatszam", query = "SELECT o FROM OtthonKeszKisz o WHERE o.sorozatszam = :sorozatszam"),
+    @NamedQuery(name = "OtthonKeszKisz.findByBetegKeszKiszSorozat", query = "SELECT o FROM OtthonKeszKisz o WHERE o.keszKiszID = :keszKisz AND o.betegID = :beteg AND o.sorozatszam = :sorozatszam"),
     @NamedQuery(name = "OtthonKeszKisz.findByDarab", query = "SELECT o FROM OtthonKeszKisz o WHERE o.darab = :darab")})
 public class OtthonKeszKisz implements Serializable {
     private static final long serialVersionUID = 1L;
@@ -56,14 +58,11 @@ public class OtthonKeszKisz implements Serializable {
     private KeszKisz keszKiszID;
 
     public OtthonKeszKisz() {
+        this.id = UUID.randomUUID().toString().replaceAll("-", "");
     }
 
-    public OtthonKeszKisz(String id) {
-        this.id = id;
-    }
-
-    public OtthonKeszKisz(String id, String sorozatszam, int darab) {
-        this.id = id;
+    public OtthonKeszKisz(String sorozatszam, int darab) {
+        this.id = UUID.randomUUID().toString().replaceAll("-", "");
         this.sorozatszam = sorozatszam;
         this.darab = darab;
     }

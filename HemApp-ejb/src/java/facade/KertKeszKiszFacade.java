@@ -40,4 +40,11 @@ public class KertKeszKiszFacade extends AbstractFacade<KertKeszKisz> {
         Date sevenDaysAgo = cal.getTime();
         return em.createNamedQuery("KertKeszKisz.findActualByBeteg").setParameter("startDate", sevenDaysAgo).setParameter("beteg", beteg).getResultList();
     }
+    
+    public List<KertKeszKisz> getActual() {
+        Calendar cal = new GregorianCalendar();
+        cal.add(Calendar.DAY_OF_MONTH, -7);
+        Date sevenDaysAgo = cal.getTime();
+        return em.createNamedQuery("KertKeszKisz.findActual").setParameter("startDate", sevenDaysAgo).getResultList();
+    }
 }

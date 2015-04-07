@@ -28,15 +28,6 @@
             </pm:header>
 
             <pm:content>
-                <h:form id="selection">
-                    <pm:field>
-                        <p:outputLabel for="selectBeteg" value="Beteg választása:" />
-                        <p:selectOneMenu id="selectBeteg" value="#{KertKeszitmenyController.selectedBetegID}">
-                            <p:ajax event="change" listener="#{KertKeszitmenyController.updateSelectedBeteg}" update=":page:tableForm"/>
-                            <f:selectItems value="#{KertKeszitmenyController.betegekForOrvos}" var="beteg" itemLabel="#{beteg.vezeteknev} #{beteg.keresztnev} #{beteg.taj}" itemValue="#{beteg.id}"/>
-                        </p:selectOneMenu>
-                    </pm:field>
-                </h:form>
                 <h:form id="tableForm">
                     <br/>
                     <p:dataList value="#{KertKeszitmenyController.kertKeszKiszList}" var="kertKeszKisz">

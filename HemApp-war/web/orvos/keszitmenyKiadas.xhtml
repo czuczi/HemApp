@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:pm="http://primefaces.org/mobile">
+
+    <f:view renderKitId="PRIMEFACES_MOBILE" />
+
+    <h:head>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta content='text/html; charset=UTF-8' http-equiv="Content-Type"/>
+    </h:head>
+
+    <h:body onload="#{LoginController.pageRightCheckerForOrvos()}" style="background-color: darkgray; font-size: 0.8em">
+
+        <p:growl id="message" life="4000" showDetail="true" />
+        <pm:page id="page">
+            <p:idleMonitor timeout="#{LoginController.timeOut}">
+                <p:ajax event="idle" listener="#{LoginController.invalidateSession()}"/>
+            </p:idleMonitor>
+            <pm:header title="HemApp">
+                <h:form id="menu">
+                    <p:menu>
+                        <p:menuitem value="Menü" url="orvos.xhtml" icon="ui-icon-home" />
+                    </p:menu>
+                </h:form>
+            </pm:header>
+
+            <pm:content>
+                <h:form id="felveszButton">
+                    <p:outputLabel for="selectBeteg" value="Beteg választása:" />
+                    <p:selectOneMenu id="selectBeteg" value="#{KeszitmenyKiadasController.selectedBetegID}">
+                        <p:ajax event="change" listener="#{KeszitmenyKiadasController.updateSelectedBeteg}" update=":page:tableForm"/>
+                        <f:selectItems value="#{KeszitmenyKiadasController.betegekForOrvos}" var="beteg" itemLabel="#{beteg.vezeteknev} #{beteg.keresztnev} #{beteg.taj}" itemValue="#{beteg.id}"/>
+                    </p:selectOneMenu>
+                    <p:commandButton value="Készítmény kiadása" onclick="PF('kiadasDialogWidget').show();" />
+                </h:form>
+                <h:form id="tableForm">
+                    <br/>
+                    <p:dataList value="#{KeszitmenyKiadasController.otthonKeszKiszByBeteg}" var="betegKeszKisz">
+                        <f:facet name="header">
+                            A betegnél lévő készítmények
+                        </f:facet>
+                        <h:outputText value="#{betegKeszKisz.keszKiszID.keszitmenyID.nev} "/>
+                        <h:outputText value="#{betegKeszKisz.keszKiszID.kiszerelesID.NE}"/>
+                        <h:outputText value=" - "/>
+                        <h:outputText value="#{betegKeszKisz.sorozatszam} "/>
+                        <h:outputText value="#{betegKeszKisz.darab} db" />
+                        <f:facet name="footer">
+                            A betegnél lévő készítmények
+                        </f:facet>
+                    </p:dataList>
+                </h:form>
+
+                <p:dialog id="kiadasDialog" widgetVar="kiadasDialogWidget" resizable="false"
+                          header="Készítménykiadás" style="width: max-content !important">
+                    <h:form id="kiadasForm">
+                        <p:panelGrid columns="2">
+                            <p:outputLabel value="Válassza ki a készítményt és a kiszerelést: " />
+                            <p:selectOneMenu id="selectKeszKisz" value="#{KeszitmenyKiadasController.selectedKeszKiszID}">
+                                <p:ajax event="change" listener="#{KeszitmenyKiadasController.updateSelectedKeszKisz()}" update="selectSorozatSzam"/>
+                                <f:selectItems value="#{KeszitmenyKiadasController.keszKiszList}" var="keszKisz" itemLabel="#{keszKisz.keszitmenyID.nev} #{keszKisz.kiszerelesID.NE} NE" itemValue="#{keszKisz.id}"/>
+                            </p:selectOneMenu>
+                            <p:outputLabel value="Válassza ki a sorozatszámot: " />
+                            <p:selectOneMenu id="selectSorozatSzam" value="#{KeszitmenyKiadasController.selectedSorozatszam}">
+                                <f:selectItems value="#{KeszitmenyKiadasController.sorozatSzamSet}" var="sorozatSzam" itemLabel="#{sorozatSzam}" itemValue="#{sorozatSzam}"/>
+                            </p:selectOneMenu>
+                            <p:outputLabel value="Adja meg a darabszámot: " />
+                            <p:inputText value="#{KeszitmenyKiadasController.selectedDarabSzam}"/>
+                        </p:panelGrid>
+                        <p:commandButton value="Mentés" actionListener="#{KeszitmenyKiadasController.kiadas()}" ajax="false"/>
+                    </h:form>
+                </p:dialog>
+            </pm:content>
+        </pm:page>
+    </h:body>
+
+</html>

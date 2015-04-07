@@ -32,7 +32,8 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "RaktarKeszKisz.findById", query = "SELECT r FROM RaktarKeszKisz r WHERE r.id = :id"),
     @NamedQuery(name = "RaktarKeszKisz.findBySorozatszam", query = "SELECT r FROM RaktarKeszKisz r WHERE r.sorozatszam = :sorozatszam"),
     @NamedQuery(name = "RaktarKeszKisz.findByDarab", query = "SELECT r FROM RaktarKeszKisz r WHERE r.darab = :darab"),
-    @NamedQuery(name = "RaktarKeszKisz.findByOrvosKeszKiszSorozat", query = "SELECT r FROM RaktarKeszKisz r WHERE r.keszKiszID = :keszKisz AND r.orvosID = :orvos AND r.sorozatszam = :sorozatszam")})
+    @NamedQuery(name = "RaktarKeszKisz.findByOrvosKeszKiszSorozat", query = "SELECT r FROM RaktarKeszKisz r WHERE r.keszKiszID = :keszKisz AND r.orvosID = :orvos AND r.sorozatszam = :sorozatszam"),
+    @NamedQuery(name = "RaktarKeszKisz.findKeszKiszByOrvos", query = "SELECT DISTINCT r.keszKiszID FROM RaktarKeszKisz r WHERE r.orvosID = :orvos")})
 public class RaktarKeszKisz implements Serializable {
     @JoinColumn(name = "Orvos_ID", referencedColumnName = "ID")
     @ManyToOne(optional = false)

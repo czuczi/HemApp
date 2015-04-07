@@ -34,4 +34,8 @@ public class RaktarKeszKiszFacade extends AbstractFacade<RaktarKeszKisz> {
     public List<RaktarKeszKisz> getByOrvosKeszKiszSorozatszam(Orvos orvos, KeszKisz keszKisz, String sorozatszam) {
         return em.createNamedQuery("RaktarKeszKisz.findByOrvosKeszKiszSorozat").setParameter("orvos", orvos).setParameter("keszKisz", keszKisz).setParameter("sorozatszam", sorozatszam).getResultList();
     }
+    
+    public List<KeszKisz> getKeszKiszByOrvos(Orvos orvos) {
+        return em.createNamedQuery("RaktarKeszKisz.findKeszKiszByOrvos").setParameter("orvos", orvos).getResultList();
+    }
 }

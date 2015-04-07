@@ -48,7 +48,6 @@ public class KertKeszitmenyController implements Serializable {
     private List<Beteg> betegekForOrvos;
     
     private KeszKisz selectedKeszKisz;
-    private Beteg selectedBeteg;
     
     private String selectedBetegID;
     private String selectedKeszKiszID;
@@ -58,15 +57,8 @@ public class KertKeszitmenyController implements Serializable {
     @PostConstruct
     public void init() {
         betegekForOrvos = new LinkedList<>(loginController.getOrvos().getBetegCollection());
-        selectedBeteg = betegekForOrvos.get(0);
-        selectedBetegID = selectedBeteg.getId();
         selectedDate = new Date();
-        kertKeszKiszList = kertKeszKiszFacade.getActualByBeteg(selectedBeteg);
-    }
-
-    public void updateSelectedBeteg() {
-        selectedBeteg = betegFacade.getByID(selectedBetegID).get(0);
-        kertKeszKiszList = kertKeszKiszFacade.getActualByBeteg(selectedBeteg);
+        kertKeszKiszList = kertKeszKiszFacade.getActual();
     }
 
     public String getSelectedKeszKiszID() {
@@ -123,14 +115,6 @@ public class KertKeszitmenyController implements Serializable {
 
     public void setBetegekForOrvos(List<Beteg> betegekForOrvos) {
         this.betegekForOrvos = betegekForOrvos;
-    }
-
-    public Beteg getSelectedBeteg() {
-        return selectedBeteg;
-    }
-
-    public void setSelectedBeteg(Beteg selectedBeteg) {
-        this.selectedBeteg = selectedBeteg;
     }
 
     public String getSelectedBetegID() {

@@ -91,7 +91,7 @@ public class RaktarKeszKiszController implements Serializable {
             raktarKeszKisz.setKeszKiszID(selectedKeszKisz);
             raktarKeszKiszFacade.create(raktarKeszKisz);
         }
-        selectedDarabSzam = selectedDarabSzam = null;
+        selectedDarabSzam = selectedSorozatszam = null;
         Orvos orvos = orvosFacade.getByID(loginController.getOrvos().getId()).get(0);
         raktarKeszKiszList = new LinkedList<>(orvos.getRaktarKeszKiszCollection());
         RequestContext.getCurrentInstance().execute("PF('raktarDialogWidget').hide();");

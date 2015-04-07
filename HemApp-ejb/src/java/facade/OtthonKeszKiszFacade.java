@@ -5,7 +5,10 @@
  */
 package facade;
 
+import entity.Beteg;
+import entity.KeszKisz;
 import entity.OtthonKeszKisz;
+import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -27,5 +30,8 @@ public class OtthonKeszKiszFacade extends AbstractFacade<OtthonKeszKisz> {
     public OtthonKeszKiszFacade() {
         super(OtthonKeszKisz.class);
     }
-    
+
+    public List<OtthonKeszKisz> getByBetegKeszKiszSorozatszam(Beteg beteg, KeszKisz keszKisz, String sorozatszam) {
+       return em.createNamedQuery("OtthonKeszKisz.findByBetegKeszKiszSorozat").setParameter("beteg", beteg).setParameter("keszKisz", keszKisz).setParameter("sorozatszam", sorozatszam).getResultList();
+    }
 }
