@@ -6,6 +6,7 @@
 package controller;
 
 import entity.Beteg;
+import entity.Injekciotortenet;
 import entity.Orvos;
 import entity.Uzenet;
 import facade.BetegFacade;
@@ -17,12 +18,12 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
-import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
-import java.util.Locale;
-import java.util.TimeZone;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.activation.MimetypesFileTypeMap;
@@ -63,6 +64,7 @@ public class SingleBetegController implements Serializable {
     private List<Beteg> allBeteg;
     private List<Uzenet> myUzenetListByOrvos;
     private List<Uzenet> segedUzenetList;
+    private List<Injekciotortenet> injekciotortenetList;
     private HashSet<Orvos> orvosok = new HashSet<>();
 
     private Beteg actBeteg;
@@ -101,6 +103,19 @@ public class SingleBetegController implements Serializable {
         selectedOrvos = kezeloOrvos;
         initUzenetByOrvos();
         orvosok.addAll(uzenetFacade.getOrvosListByBeteg(actBeteg));
+        injekciotortenetList = new LinkedList<>(actBeteg.getInjekciotortenetCollection());
+        Collections.sort(injekciotortenetList, new Comparator<Injekciotortenet>() {
+
+            @Override
+            public int compare(Injekciotortenet o1, Injekciotortenet o2) {
+                if (o1.getKezdetdatum().getTime() == o2.getKezdetdatum().getTime()) {
+                    return 0;
+                } else {
+                    return o1.getKezdetdatum().getTime() - o2.getKezdetdatum().getTime() > 0 ? -1 : 1;
+                }
+            }
+
+        });
     }
 
     public void init2() {
@@ -438,6 +453,14 @@ public class SingleBetegController implements Serializable {
 
     public void setSegedUzenetList(List<Uzenet> segedUzenetList) {
         this.segedUzenetList = segedUzenetList;
+    }
+
+    public List<Injekciotortenet> getInjekciotortenetList() {
+        return injekciotortenetList;
+    }
+
+    public void setInjekciotortenetList(List<Injekciotortenet> injekciotortenetList) {
+        this.injekciotortenetList = injekciotortenetList;
     }
 
 }
