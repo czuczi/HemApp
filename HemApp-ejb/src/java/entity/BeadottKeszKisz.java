@@ -7,6 +7,7 @@ package entity;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.UUID;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -60,14 +61,11 @@ public class BeadottKeszKisz implements Serializable {
     private KeszKisz keszKiszID;
 
     public BeadottKeszKisz() {
+        this.id = UUID.randomUUID().toString().replaceAll("-", "");
     }
 
-    public BeadottKeszKisz(String id) {
-        this.id = id;
-    }
-
-    public BeadottKeszKisz(String id, Date datum, String sorozatszam) {
-        this.id = id;
+    public BeadottKeszKisz(Date datum, String sorozatszam) {
+        this.id = UUID.randomUUID().toString().replaceAll("-", "");
         this.datum = datum;
         this.sorozatszam = sorozatszam;
     }

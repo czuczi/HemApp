@@ -110,7 +110,6 @@ public class KeszitmenyKiadasController implements Serializable {
         for (RaktarKeszKisz r : raktarKeszKiszList) {
             if (r.getKeszKiszID().equals(selectedKeszKisz)) {
                 if (db > r.getDarab()) {
-                    RequestContext.getCurrentInstance().execute("PF('kiadasDialogWidget').hide();");
                     FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "WARNING", "Maximum " + r.getDarab() + " készítmény áll rendelkezésre!");
                     FacesContext.getCurrentInstance().addMessage(null, msg);
                     RequestContext.getCurrentInstance().execute("PF('kiadasDialogWidget').hide();");

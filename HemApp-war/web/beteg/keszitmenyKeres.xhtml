@@ -55,7 +55,7 @@
                         <p:panelGrid columns="2">
                             <p:outputLabel value="Válassza ki a kiszerelést: " />
                             <p:selectOneMenu id="selectKiszereles" value="#{KeszitmenyKeresController.selectedKeszKiszID}">
-                                <p:ajax event="change" listener="#{KeszitmenyKeresController.updateSelectedKeszKisz()}" update=":page:tableForm"/>
+                                <p:ajax event="change" listener="#{KeszitmenyKeresController.updateSelectedKeszKisz()}" />
                                 <f:selectItems value="#{KeszitmenyKeresController.keszKiszList}" var="keszKisz" itemLabel="#{keszKisz.kiszerelesID.NE}" itemValue="#{keszKisz.id}"/>
                             </p:selectOneMenu>
                             <p:outputLabel value="Adja meg a darabszámot: " />

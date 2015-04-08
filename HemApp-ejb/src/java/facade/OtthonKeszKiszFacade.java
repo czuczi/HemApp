@@ -34,4 +34,8 @@ public class OtthonKeszKiszFacade extends AbstractFacade<OtthonKeszKisz> {
     public List<OtthonKeszKisz> getByBetegKeszKiszSorozatszam(Beteg beteg, KeszKisz keszKisz, String sorozatszam) {
        return em.createNamedQuery("OtthonKeszKisz.findByBetegKeszKiszSorozat").setParameter("beteg", beteg).setParameter("keszKisz", keszKisz).setParameter("sorozatszam", sorozatszam).getResultList();
     }
+    
+    public List<OtthonKeszKisz> getByID(String id) {
+        return em.createNamedQuery("OtthonKeszKisz.findById").setParameter("id", id).getResultList();
+    }
 }
