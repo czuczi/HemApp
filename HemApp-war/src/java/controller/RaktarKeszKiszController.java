@@ -37,33 +37,35 @@ import org.primefaces.context.RequestContext;
 @ManagedBean(name = "RaktarKeszKiszController")
 @SessionScoped
 public class RaktarKeszKiszController implements Serializable {
-    
+
     @ManagedProperty("#{LoginController}")
     private LoginController loginController;
-    
+
     @EJB
     private KeszKiszFacade keszKiszFacade;
     @EJB
     private RaktarKeszKiszFacade raktarKeszKiszFacade;
     @EJB
     private OrvosFacade orvosFacade;
-    
+
     private List<KeszKisz> keszKiszList;
     private List<RaktarKeszKisz> raktarKeszKiszList;
-    
+
     private KeszKisz selectedKeszKisz;
-    
+
     private String selectedKeszKiszID;
     private String selectedDarabSzam;
     private String selectedSorozatszam;
-    
+
     @PostConstruct
     public void init() {
         keszKiszList = keszKiszFacade.findAll();
-        selectedKeszKisz = keszKiszList.get(0);
+        if (!keszKiszList.isEmpty()) {
+            selectedKeszKisz = keszKiszList.get(0);
+        }
         raktarKeszKiszList = new LinkedList<>(loginController.getOrvos().getRaktarKeszKiszCollection());
     }
-    
+
     public void felvetel() {
         try {
             Integer.parseInt(selectedDarabSzam);
@@ -73,7 +75,7 @@ public class RaktarKeszKiszController implements Serializable {
             FacesContext.getCurrentInstance().addMessage(null, msg);
             return;
         }
-        if(selectedSorozatszam == null || selectedSorozatszam.length() == 0) {
+        if (selectedSorozatszam == null || selectedSorozatszam.length() == 0) {
             RequestContext.getCurrentInstance().execute("PF('raktarDialogWidget').hide();");
             FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "WARNING", "A sorozatszám megadása kötelező!");
             FacesContext.getCurrentInstance().addMessage(null, msg);
@@ -81,7 +83,7 @@ public class RaktarKeszKiszController implements Serializable {
         }
         RaktarKeszKisz raktarKeszKisz;
         List<RaktarKeszKisz> seged = raktarKeszKiszFacade.getByOrvosKeszKiszSorozatszam(loginController.getOrvos(), selectedKeszKisz, selectedSorozatszam);
-        if(seged != null && !seged.isEmpty()) {
+        if (seged != null && !seged.isEmpty()) {
             raktarKeszKisz = seged.get(0);
             raktarKeszKisz.setDarab(raktarKeszKisz.getDarab() + Integer.parseInt(selectedDarabSzam));
             raktarKeszKiszFacade.edit(raktarKeszKisz);
@@ -96,7 +98,7 @@ public class RaktarKeszKiszController implements Serializable {
         raktarKeszKiszList = new LinkedList<>(orvos.getRaktarKeszKiszCollection());
         RequestContext.getCurrentInstance().execute("PF('raktarDialogWidget').hide();");
     }
-    
+
     public void updateSelectedKeszKisz() {
         selectedKeszKisz = keszKiszFacade.getByID(selectedKeszKiszID).get(0);
     }
@@ -156,5 +158,5 @@ public class RaktarKeszKiszController implements Serializable {
     public void setLoginController(LoginController loginController) {
         this.loginController = loginController;
     }
-    
+
 }

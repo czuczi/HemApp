@@ -111,23 +111,28 @@ public class SingleOrvosController implements Serializable {
         emailForChange = actOrvos.getEmail();
         telefonForChange = actOrvos.getTelefon();
         betegekForOrvos = new LinkedList<>(actOrvos.getBetegCollection());
-        selectedBetegID = betegekForOrvos.get(0).getId();
-        selectedBeteg = betegekForOrvos.get(0);
-        selectedInjekcioTortenetList = new LinkedList<>(selectedBeteg.getInjekciotortenetCollection());
-        allKeszitmeny = keszitmenyFacade.findAll();
-        Collections.sort(selectedInjekcioTortenetList, new Comparator<Injekciotortenet>() {
+        if (!betegekForOrvos.isEmpty()) {
+            selectedBetegID = betegekForOrvos.get(0).getId();
+            selectedBeteg = betegekForOrvos.get(0);
+            selectedInjekcioTortenetList = new LinkedList<>(selectedBeteg.getInjekciotortenetCollection());
+            Collections.sort(selectedInjekcioTortenetList, new Comparator<Injekciotortenet>() {
 
-            @Override
-            public int compare(Injekciotortenet o1, Injekciotortenet o2) {
-                if (o1.getKezdetdatum().getTime() == o2.getKezdetdatum().getTime()) {
-                    return 0;
-                } else {
-                    return o1.getKezdetdatum().getTime() - o2.getKezdetdatum().getTime() > 0 ? -1 : 1;
+                @Override
+                public int compare(Injekciotortenet o1, Injekciotortenet o2) {
+                    if (o1.getKezdetdatum().getTime() == o2.getKezdetdatum().getTime()) {
+                        return 0;
+                    } else {
+                        return o1.getKezdetdatum().getTime() - o2.getKezdetdatum().getTime() > 0 ? -1 : 1;
+                    }
                 }
-            }
 
-        });
-        selectedKeszitmeny = allKeszitmeny.get(0);
+            });
+        }
+        allKeszitmeny = keszitmenyFacade.findAll();
+
+        if (!allKeszitmeny.isEmpty()) {
+            selectedKeszitmeny = allKeszitmeny.get(0);
+        }
         initUzenetByBeteg();
     }
 
@@ -136,12 +141,14 @@ public class SingleOrvosController implements Serializable {
     }
 
     public void initUzenetByBeteg() {
-        selectedBeteg = betegFacade.getByID(selectedBetegID).get(0);
-        segedUzenetList = uzenetFacade.getByBetegAndOrvos(selectedBeteg, actOrvos);
-        if (segedUzenetList.size() > uzenetStartIndex + 5) {
-            myUzenetListByBeteg = segedUzenetList.subList(uzenetStartIndex, uzenetStartIndex + 5);
-        } else {
-            myUzenetListByBeteg = segedUzenetList.subList(uzenetStartIndex, segedUzenetList.size());
+        if (selectedBetegID != null && !betegFacade.getByID(selectedBetegID).isEmpty()) {
+            selectedBeteg = betegFacade.getByID(selectedBetegID).get(0);
+            segedUzenetList = uzenetFacade.getByBetegAndOrvos(selectedBeteg, actOrvos);
+            if (segedUzenetList.size() > uzenetStartIndex + 5) {
+                myUzenetListByBeteg = segedUzenetList.subList(uzenetStartIndex, uzenetStartIndex + 5);
+            } else {
+                myUzenetListByBeteg = segedUzenetList.subList(uzenetStartIndex, segedUzenetList.size());
+            }
         }
     }
 

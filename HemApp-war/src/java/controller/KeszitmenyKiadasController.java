@@ -74,12 +74,16 @@ public class KeszitmenyKiadasController implements Serializable {
     @PostConstruct
     public void init() {
         keszKiszList = raktarKeszKiszFacade.getKeszKiszByOrvos(loginController.getOrvos());
-        selectedKeszKisz = keszKiszList.get(0);
+        if (!keszKiszList.isEmpty()) {
+            selectedKeszKisz = keszKiszList.get(0);
+        }
         raktarKeszKiszList = new LinkedList<>(loginController.getOrvos().getRaktarKeszKiszCollection());
         betegekForOrvos = new LinkedList<>(loginController.getOrvos().getBetegCollection());
-        selectedBetegID = betegekForOrvos.get(0).getId();
-        selectedBeteg = betegekForOrvos.get(0);
-        otthonKeszKiszByBeteg = new LinkedList<>(selectedBeteg.getOtthonKeszKiszCollection());
+        if (!betegekForOrvos.isEmpty()) {
+            selectedBetegID = betegekForOrvos.get(0).getId();
+            selectedBeteg = betegekForOrvos.get(0);
+            otthonKeszKiszByBeteg = new LinkedList<>(selectedBeteg.getOtthonKeszKiszCollection());
+        }
         sorozatSzamSet = new HashSet<>();
         for (RaktarKeszKisz r : raktarKeszKiszList) {
             if (r.getKeszKiszID().equals(selectedKeszKisz)) {
