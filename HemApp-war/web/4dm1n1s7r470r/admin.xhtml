@@ -11,7 +11,7 @@
     </h:head>
     <h:body onload="#{LoginController.pageRightCheckerForAdmin()}" style="background-color: darkgray; font-size: 0.8em">
         <p:idleMonitor timeout="#{LoginController.timeOut}">
-            <p:ajax event="idle" listener="#{LoginController.invalidateSession()}"/>
+            <p:ajax event="idle" listener="#{LoginController.invalidateSessionForAdmin()}"/>
         </p:idleMonitor>
         <h:form id="page">
             <p:menubar>

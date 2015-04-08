@@ -17,7 +17,7 @@
         <p:growl id="message" life="4000" showDetail="true" />
         <pm:page id="page">
             <p:idleMonitor timeout="#{LoginController.timeOut}">
-                <p:ajax event="idle" listener="#{LoginController.invalidateSession()}"/>
+                <p:ajax event="idle" listener="#{LoginController.invalidateSessionForOrvos()}"/>
             </p:idleMonitor>
             <pm:header title="HemApp">
                 <h:form id="menu">

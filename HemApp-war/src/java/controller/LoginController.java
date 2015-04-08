@@ -131,11 +131,31 @@ public class LoginController implements Serializable {
         FacesContext.getCurrentInstance().getExternalContext().invalidateSession();
     }
 
-    public void invalidateSession() {
+    public void invalidateSessionForAdmin() {
         if (!invalidated) {
             try {
                 invalidated = true;
                 FacesContext.getCurrentInstance().getExternalContext().redirect(FacesContext.getCurrentInstance().getExternalContext().getRequestContextPath() + "/4dm1n1s7r470r/adminlogin.xhtml");
+            } catch (IOException e) {
+            }
+        }
+    }
+    
+    public void invalidateSessionForBeteg() {
+        if (!invalidated) {
+            try {
+                invalidated = true;
+                FacesContext.getCurrentInstance().getExternalContext().redirect(FacesContext.getCurrentInstance().getExternalContext().getRequestContextPath() + "/beteg/beteglogin.xhtml");
+            } catch (IOException e) {
+            }
+        }
+    }
+    
+    public void invalidateSessionForOrvos() {
+        if (!invalidated) {
+            try {
+                invalidated = true;
+                FacesContext.getCurrentInstance().getExternalContext().redirect(FacesContext.getCurrentInstance().getExternalContext().getRequestContextPath() + "/orvos/orvoslogin.xhtml");
             } catch (IOException e) {
             }
         }

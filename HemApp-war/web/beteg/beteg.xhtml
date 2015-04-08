@@ -15,7 +15,7 @@
     <h:body onload="#{LoginController.pageRightCheckerForBeteg()}" style="background-color: darkgray; font-size: 0.8em">
         <pm:page>
             <p:idleMonitor timeout="#{LoginController.timeOut}">
-                <p:ajax event="idle" listener="#{LoginController.invalidateSession()}"/>
+                <p:ajax event="idle" listener="#{LoginController.invalidateSessionForBeteg()}"/>
             </p:idleMonitor>
             <pm:header title="HemApp">
                 <h:form id="menu">
