@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:pm="http://primefaces.org/mobile">
+
+    <f:view renderKitId="PRIMEFACES_MOBILE" />
+
+    <h:head>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta content='text/html; charset=UTF-8' http-equiv="Content-Type"/>
+    </h:head>
+
+    <h:body onload="#{LoginController.pageRightCheckerForOrvos()}" style="background-color: darkgray; font-size: 0.8em">
+
+        <p:growl id="message" life="4000" showDetail="true" />
+        <pm:page id="page">
+            <p:idleMonitor timeout="#{LoginController.timeOut}">
+                <p:ajax event="idle" listener="#{LoginController.invalidateSession()}"/>
+            </p:idleMonitor>
+            <pm:header title="HemApp">
+                <h:form id="menu">
+                    <p:menu>
+                        <p:menuitem value="Menü" url="orvos.xhtml" icon="ui-icon-home" />
+                    </p:menu>
+                </h:form>
+            </pm:header>
+
+            <pm:content>
+                <h:form id="selection">
+                    <pm:field>
+                        <p:outputLabel for="selectBeteg" value="Beteg választása:" />
+                        <p:selectOneMenu id="selectBeteg" value="#{BeadottKeszitmenyController.selectedBetegID}">
+                            <p:ajax event="change" listener="#{BeadottKeszitmenyController.updateSelectedBeteg}" update=":page:tableForm"/>
+                            <f:selectItems value="#{BeadottKeszitmenyController.betegList}" var="beteg" itemLabel="#{beteg.vezeteknev} #{beteg.keresztnev} #{beteg.taj}" itemValue="#{beteg.id}"/>
+                        </p:selectOneMenu>
+                    </pm:field>
+                </h:form>
+                <h:form id="tableForm">
+                    <br/>
+                    <p:dataList value="#{BeadottKeszitmenyController.beadottKeszKiszList}" var="beadottKeszKisz">
+                        <f:facet name="header">
+                            A kiválasztott beteg által beadott készítmények
+                        </f:facet>
+                        <h:outputText value="#{beadottKeszKisz.keszKiszID.keszitmenyID.nev} "/>
+                        <h:outputText value="#{beadottKeszKisz.keszKiszID.kiszerelesID.NE}"/>
+                        <h:outputText value=" - "/>
+                        <h:outputText value="#{beadottKeszKisz.sorozatszam} "/>
+                        <h:outputText value="#{beadottKeszKisz.datum}">
+                            <f:convertDateTime pattern="yyyy. MM. dd. HH:mm:ss" />
+                        </h:outputText>
+                        <f:facet name="footer">
+                            A kiválasztott beteg által beadott készítmények
+                        </f:facet>
+                    </p:dataList>
+                </h:form>
+            </pm:content>
+        </pm:page>
+    </h:body>
+
+</html>

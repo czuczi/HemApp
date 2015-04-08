@@ -6,26 +6,15 @@
 package controller;
 
 import entity.BeadottKeszKisz;
-import entity.Beteg;
-import entity.KertKeszKisz;
-import entity.KeszKisz;
-import entity.Kiszereles;
-import entity.Orvos;
 import entity.OtthonKeszKisz;
-import entity.RaktarKeszKisz;
 import facade.BeadottKeszKiszFacade;
 import facade.BetegFacade;
-import facade.InjekciotortenetFacade;
-import facade.KertKeszKiszFacade;
-import facade.KeszKiszFacade;
 import facade.OrvosFacade;
 import facade.OtthonKeszKiszFacade;
-import facade.RaktarKeszKiszFacade;
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import javax.annotation.PostConstruct;
@@ -50,8 +39,6 @@ public class KeszitmenyBeadasController implements Serializable {
     @ManagedProperty("#{LoginController}")
     private LoginController loginController;
 
-    @EJB
-    private OrvosFacade orvosFacade;
     @EJB
     private BetegFacade betegFacade;
     @EJB
@@ -83,7 +70,7 @@ public class KeszitmenyBeadasController implements Serializable {
                 if (o1.getDatum().getTime() == o2.getDatum().getTime()) {
                     return 0;
                 } else {
-                    return o2.getDatum().getTime() - o1.getDatum().getTime() > 0 ? -1 : 1;
+                    return o2.getDatum().getTime() - o1.getDatum().getTime() > 0 ? 1 : -1;
                 }
             }
 
@@ -121,7 +108,7 @@ public class KeszitmenyBeadasController implements Serializable {
                 if (o1.getDatum().getTime() == o2.getDatum().getTime()) {
                     return 0;
                 } else {
-                    return o2.getDatum().getTime() - o1.getDatum().getTime() > 0 ? -1 : 1;
+                    return o2.getDatum().getTime() - o1.getDatum().getTime() > 0 ? 1 : -1;
                 }
             }
 

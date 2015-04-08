@@ -122,7 +122,7 @@ public class SingleOrvosController implements Serializable {
                     if (o1.getKezdetdatum().getTime() == o2.getKezdetdatum().getTime()) {
                         return 0;
                     } else {
-                        return o2.getKezdetdatum().getTime() - o1.getKezdetdatum().getTime() > 0 ? -1 : 1;
+                        return o2.getKezdetdatum().getTime() - o1.getKezdetdatum().getTime() > 0 ? 1 : -1;
                     }
                 }
 
@@ -186,7 +186,7 @@ public class SingleOrvosController implements Serializable {
                 if (o1.getKezdetdatum().getTime() == o2.getKezdetdatum().getTime()) {
                     return 0;
                 } else {
-                    return o1.getKezdetdatum().getTime() - o2.getKezdetdatum().getTime() > 0 ? -1 : 1;
+                    return o1.getKezdetdatum().getTime() - o2.getKezdetdatum().getTime() > 0 ? 1 : -1;
                 }
             }
 
