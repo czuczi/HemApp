@@ -57,8 +57,12 @@ public class KeszitmenyController implements Serializable {
         allKeszKisz = keszKiszFacade.findAll();
         allKeszitmeny = keszitmenyFacade.findAll();
         allKiszereles = kiszerelesFacade.findAll();
-        keszitmenyID = allKeszitmeny.get(0).getId();
-        kiszerelesID = allKiszereles.get(0).getId();
+        if (!allKeszitmeny.isEmpty()) {
+            keszitmenyID = allKeszitmeny.get(0).getId();
+        }
+        if (!allKiszereles.isEmpty()) {
+            kiszerelesID = allKiszereles.get(0).getId();
+        }
     }
 
     public void selectKeszitmeny(SelectEvent event) {

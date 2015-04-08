@@ -33,34 +33,38 @@ import org.primefaces.context.RequestContext;
 @ManagedBean(name = "KeszitmenyKeresController")
 @SessionScoped
 public class KeszitmenyKeresController implements Serializable {
-    
+
     @ManagedProperty("#{LoginController}")
     private LoginController loginController;
-    
+
     @EJB
     private InjekciotortenetFacade injekciotortenetFacade;
     @EJB
     private KeszKiszFacade keszKiszFacade;
     @EJB
     private KertKeszKiszFacade kertKeszKiszFacade;
-    
+
     private List<KeszKisz> keszKiszList;
     private List<KertKeszKisz> kertKeszKiszList;
-    
+
     private KeszKisz selectedKeszKisz;
-    
+
     private String selectedKeszKiszID;
     private String selectedDarabSzam;
     private Date selectedDate;
-    
+
     @PostConstruct
     public void init() {
-        keszKiszList = new LinkedList<>(injekciotortenetFacade.getActualByBeteg(loginController.getBeteg()).get(0).getKeszitmenyID().getKeszKiszCollection());
-        selectedKeszKisz = keszKiszList.get(0);
+        if (injekciotortenetFacade.getActualByBeteg(loginController.getBeteg()) != null && !injekciotortenetFacade.getActualByBeteg(loginController.getBeteg()).isEmpty()) {
+            keszKiszList = new LinkedList<>(injekciotortenetFacade.getActualByBeteg(loginController.getBeteg()).get(0).getKeszitmenyID().getKeszKiszCollection());
+        }
+        if (keszKiszList != null && !keszKiszList.isEmpty()) {
+            selectedKeszKisz = keszKiszList.get(0);
+        }
         selectedDate = new Date();
         kertKeszKiszList = kertKeszKiszFacade.getActualByBeteg(loginController.getBeteg());
     }
-    
+
     public void createKeres() {
         try {
             Integer.parseInt(selectedDarabSzam);
@@ -70,8 +74,8 @@ public class KeszitmenyKeresController implements Serializable {
             FacesContext.getCurrentInstance().addMessage(null, msg);
             return;
         }
-        
-        if(selectedDate.getTime() < new Date().getTime()) {
+
+        if (selectedDate.getTime() < new Date().getTime()) {
             RequestContext.getCurrentInstance().execute("PF('keresDialogWidget').hide();");
             FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "WARNING", "Csak jövőbeni időpontot adhat meg!");
             FacesContext.getCurrentInstance().addMessage(null, msg);
@@ -87,7 +91,7 @@ public class KeszitmenyKeresController implements Serializable {
         selectedDate = new Date();
         RequestContext.getCurrentInstance().execute("PF('keresDialogWidget').hide();");
     }
-    
+
     public void updateSelectedKeszKisz() {
         selectedKeszKisz = keszKiszFacade.getByID(selectedKeszKiszID).get(0);
     }
@@ -147,5 +151,5 @@ public class KeszitmenyKeresController implements Serializable {
     public void setLoginController(LoginController loginController) {
         this.loginController = loginController;
     }
-    
+
 }

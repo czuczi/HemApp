@@ -107,7 +107,7 @@
                     <p:inputText value="#{KeszitmenyController.keszitmenyNev}" required="true" requiredMessage="Kérem adja meg a készítmény nevét!" />
                 </p:panelGrid>
                 <center>
-                    <p:commandButton value="Készítmény hozzáadása" actionListener="#{KeszitmenyController.createKeszitmeny()}" ajax="true" update=":message, :keszitmeny" />
+                    <p:commandButton value="Készítmény hozzáadása" actionListener="#{KeszitmenyController.createKeszitmeny()}" ajax="true" update=":message, :keszitmeny, :newKeszKiszForm" />
                 </center>
             </p:dialog>
         </h:form>
@@ -119,7 +119,7 @@
                     <p:inputText value="#{KeszitmenyController.kiszerelesNE}" required="true" requiredMessage="Kérem adja meg a kiszerelést!" />
                 </p:panelGrid>
                 <center>
-                    <p:commandButton value="Kiszerelés hozzáadása" actionListener="#{KeszitmenyController.createKiszereles()}" ajax="true" update=":message, :kiszereles" />
+                    <p:commandButton value="Kiszerelés hozzáadása" actionListener="#{KeszitmenyController.createKiszereles()}" ajax="true" update=":message, :kiszereles, :newKeszKiszForm" />
                 </center>
             </p:dialog>
         </h:form>
