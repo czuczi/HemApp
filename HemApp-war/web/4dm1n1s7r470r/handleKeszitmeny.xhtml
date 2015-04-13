@@ -62,7 +62,7 @@
                         </p:dataTable>
                         <center>
                             <p:commandButton value="Új" onclick="PF('newKiszerelesDialogWidget').show()" update=":message" />
-                            <p:commandButton value="Törlés" actionListener="#{KeszitmenyController.deleteKiszereles()}" ajax="true" update=":message" >
+                            <p:commandButton value="Törlés" actionListener="#{KeszitmenyController.deleteKiszereles}" ajax="true" update=":message" >
                                 <p:confirm header="Megerősítés" message="A törléssel az összes hozzá tartozó adat is törlődik, folytatja?" icon="ui-icon-alert" />
                             </p:commandButton>
                         </center>
@@ -76,10 +76,10 @@
         </p:panelGrid>
         <h:form id="keszkisz">
             <p:panel header="Készítmények kiszerelései">
-                <p:dataTable id="keszitmenytable" widgetVar="keszitmenytableWidget" value="#{KeszitmenyController.allKeszKisz}" var="keszkisz" 
+                <p:dataTable id="keszkisztable" widgetVar="keszkisztableWidget" value="#{KeszitmenyController.allKeszKisz}" var="keszkisz" 
                              rowKey="#{keszkisz.id}" disabledSelection="false" selectionMode="single" 
                              selection="#{KeszitmenyController.selectedKeszKisz}" paginator="true" rows="25">
-                    <p:ajax event="rowSelect" listener="#{KeszitmenyController.selectKeszitmeny}" />
+                    <p:ajax event="rowSelect" listener="#{KeszitmenyController.selectKeszKisz}" />
                     <p:column headerText="Név">
                         #{keszkisz.keszitmenyID.nev}
                     </p:column>

@@ -82,6 +82,7 @@ public class KeszitmenyController implements Serializable {
         keszitmenyNev = null;
         RequestContext.getCurrentInstance().execute("PF('newKeszitmenyDialogWidget').hide();");
         RequestContext.getCurrentInstance().update("newKeszitmenyForm");
+        RequestContext.getCurrentInstance().update("newKeszKiszForm");
     }
 
     public void deleteKeszitmeny() {
@@ -94,6 +95,8 @@ public class KeszitmenyController implements Serializable {
         allKeszitmeny = keszitmenyFacade.findAll();
         selectedKeszitmeny = null;
         RequestContext.getCurrentInstance().update("keszitmeny");
+        RequestContext.getCurrentInstance().update("newKeszKiszForm");
+        RequestContext.getCurrentInstance().update("keszkisz");
     }
 
     public void selectKiszereles(SelectEvent event) {
@@ -119,18 +122,21 @@ public class KeszitmenyController implements Serializable {
         kiszerelesNE = null;
         RequestContext.getCurrentInstance().execute("PF('newKiszerelesDialogWidget').hide();");
         RequestContext.getCurrentInstance().update("newKiszerelesForm");
+        RequestContext.getCurrentInstance().update("newKeszKiszForm");
     }
 
     public void deleteKiszereles() {
-        if (selectedKeszKisz == null) {
-            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "WARNING", "Kérem válasszon ki egy készítményt kiszereléssel!");
+        if (selectedKiszereles == null) {
+            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "WARNING", "Kérem válasszon ki egy kiszerelést!");
             FacesContext.getCurrentInstance().addMessage(null, msg);
             return;
         }
         kiszerelesFacade.remove(selectedKiszereles);
-        allKeszKisz = keszKiszFacade.findAll();
+        allKiszereles = kiszerelesFacade.findAll();
         selectedKiszereles = null;
+        RequestContext.getCurrentInstance().update("kiszereles");
         RequestContext.getCurrentInstance().update("keszkisz");
+        RequestContext.getCurrentInstance().update("newKeszKiszForm");
     }
 
     public void createKeszKisz() {
@@ -150,6 +156,7 @@ public class KeszitmenyController implements Serializable {
         kiszerelesID = allKiszereles.get(0).getId();
         RequestContext.getCurrentInstance().execute("PF('newKeszKiszDialogWidget').hide();");
         RequestContext.getCurrentInstance().update("newKeszKiszForm");
+        RequestContext.getCurrentInstance().update("keszkisz");
     }
 
     public void selectKeszKisz(SelectEvent event) {
@@ -158,7 +165,7 @@ public class KeszitmenyController implements Serializable {
 
     public void deleteKeszKisz() {
         if (selectedKeszKisz == null) {
-            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "WARNING", "Kérem válasszon ki egy készítményt!");
+            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "WARNING", "Kérem válasszon ki egy készítményt kiszereléssel!");
             FacesContext.getCurrentInstance().addMessage(null, msg);
             return;
         }

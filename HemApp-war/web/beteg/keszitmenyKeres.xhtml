@@ -35,7 +35,7 @@
                     <br/>
                     <p:dataList value="#{KeszitmenyKeresController.kertKeszKiszList}" var="kertKeszKisz">
                         <f:facet name="header">
-                            Készítménykérések
+                            Készítmény kérések
                         </f:facet>
                         <h:outputText value="#{kertKeszKisz.idopont}">
                             <f:convertDateTime pattern="yyyy. MM. dd." />
@@ -44,7 +44,7 @@
                         <h:outputText value="#{kertKeszKisz.keszKiszID.kiszerelesID.NE} NE, "/>
                         <h:outputText value="#{kertKeszKisz.darab} db" />
                         <f:facet name="footer">
-                            Készítménykérések
+                            Készítmény kérések
                         </f:facet>
                     </p:dataList>
                 </h:form>
