@@ -93,6 +93,8 @@ public class KeszitmenyBeadasController implements Serializable {
 
         otthonKeszKiszList = new LinkedList<>(betegFacade.getByID(loginController.getBeteg().getId()).get(0).getOtthonKeszKiszCollection());
         beadottKeszKiszList = new LinkedList<>(betegFacade.getByID(loginController.getBeteg().getId()).get(0).getBeadottKeszKiszCollection());
+        loginController.getBeteg().setOtthonKeszKiszCollection(otthonKeszKiszList);
+        loginController.getBeteg().setBeadottKeszKiszCollection(beadottKeszKiszList);
         if (!otthonKeszKiszList.isEmpty()) {
             selectedOtthonKeszKisz = otthonKeszKiszList.get(0);
             selectedOtthonKeszKiszID = selectedOtthonKeszKisz.getId();
