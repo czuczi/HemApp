@@ -123,7 +123,6 @@ public class BetegController implements Serializable {
         }
 
         if (tajCheck % 10 != Character.getNumericValue(taj.charAt(taj.length() - 1))) {
-
             FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "WARNING", "A TAJ szám nem érvényes!");
             FacesContext.getCurrentInstance().addMessage(null, msg);
             return;
