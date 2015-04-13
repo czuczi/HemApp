@@ -12,7 +12,7 @@
         <meta content='text/html; charset=UTF-8' http-equiv="Content-Type"/>
     </h:head>
 
-    <h:body onload="PF('idleDialog').show();" style="background-color: darkgray; font-size: 0.8em">
+    <h:body onload="PF('idleDialog').show(); #{LoginController.invalidateSessionContinue()}" style="background-color: darkgray; font-size: 0.8em">
         <pm:page>
             <p:dialog header="A munkamenet időtúllépés miatt megszakadt!" rendered="#{LoginController.invalidated}" onShow="#{LoginController.invalidateSessionContinue()}" resizable="false" widgetVar="idleDialog" modal="true" closable="false" closeOnEscape="false">
                 <h:form>

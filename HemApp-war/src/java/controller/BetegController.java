@@ -176,15 +176,15 @@ public class BetegController implements Serializable {
         }
 
         int tajCheck = 0;
-        for (int i = 0; i < taj.length() - 1; i++) {
+        for (int i = 0; i < tajForChange.length() - 1; i++) {
             if (i % 2 == 0) {
-                tajCheck += 3 * Character.getNumericValue(taj.charAt(i));
+                tajCheck += 3 * Character.getNumericValue(tajForChange.charAt(i));
             } else {
-                tajCheck += 7 * Character.getNumericValue(taj.charAt(i));
+                tajCheck += 7 * Character.getNumericValue(tajForChange.charAt(i));
             }
         }
 
-        if (tajCheck % 10 != Character.getNumericValue(taj.charAt(taj.length() - 1))) {
+        if (tajCheck % 10 != Character.getNumericValue(tajForChange.charAt(tajForChange.length() - 1))) {
 
             FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "WARNING", "A TAJ szám nem érvényes!");
             FacesContext.getCurrentInstance().addMessage(null, msg);

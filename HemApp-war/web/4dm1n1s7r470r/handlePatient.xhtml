@@ -41,7 +41,14 @@
                         #{beteg.keresztnev}
                     </p:column>
                     <p:column headerText="TAJ szám" filterBy="#{beteg.taj}" filterMatchMode="contains">
-                        #{beteg.taj}
+                        <f:facet name="filter">
+                            <p:inputText onkeyup="PF('tableWidget').filter();">
+                                <f:converter converterId="javax.faces.Integer" />
+                            </p:inputText>
+                        </f:facet>
+                        <h:outputText value="#{beteg.taj}" >
+                            <f:convertNumber pattern="000 000 000"/>
+                        </h:outputText>
                     </p:column>
                     <p:column headerText="E-mail" filterBy="#{beteg.email}" filterMatchMode="contains">
                         #{beteg.email}

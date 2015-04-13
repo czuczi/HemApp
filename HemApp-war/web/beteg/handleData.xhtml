@@ -37,7 +37,9 @@
                         <p:outputLabel value="Keresztnév: "/>
                         <p:outputLabel value="#{SingleBetegController.actBeteg.keresztnev}"/>
                         <p:outputLabel value="TAJ szám: "/>
-                        <p:outputLabel value="#{SingleBetegController.actBeteg.taj}"/>
+                        <p:outputLabel value="#{SingleBetegController.actBeteg.taj}" >
+                            <f:convertNumber pattern="000 000 000"/>
+                        </p:outputLabel>
                         <p:outputLabel value="E-mail: "/>
                         <p:outputLabel value="#{SingleBetegController.actBeteg.email}"/>
                         <p:outputLabel value="Telefonszám: "/>
@@ -59,7 +61,9 @@
                             <p:outputLabel value="Keresztnév: "/>
                             <p:outputLabel value="#{SingleBetegController.actBeteg.keresztnev}"/>
                             <p:outputLabel value="TAJ szám: "/>
-                            <p:outputLabel value="#{SingleBetegController.actBeteg.taj}"/>
+                            <p:outputLabel value="#{SingleBetegController.actBeteg.taj}" >
+                                <f:convertNumber pattern="000 000 000"/>
+                            </p:outputLabel>
                             <p:outputLabel value="E-mail: "/>
                             <p:inputText value="#{SingleBetegController.emailForChange}" validatorMessage="Az e-mail cím formátuma nem megfelelő!">
                                 <f:validateRegex pattern="^$|^[_A-Za-z0-9-\+]+(\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\.[ A-Za-z0-9-]+)*(\.[A-Za-z]{2,})$"/>
