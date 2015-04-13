@@ -76,7 +76,9 @@
                             <p:commandButton style="width: 100px !important; font-size: 0.8em" rendered="#{uzenet.kepLink != null}" value="Csatolt kép" ajax="false">
                                 <p:fileDownload value="#{SingleBetegController.fileDownload(uzenet.kepLink)}" />
                             </p:commandButton>
-                            <p>#{uzenet.szoveg}</p>
+                            <p:panelGrid columns="1" style="width: 80% !important">
+                                <h:outputText value="#{uzenet.szoveg}" style="white-space: normal !important"/>
+                            </p:panelGrid>
                             <p class="ui-li-aside">
                                 <strong>
                                     <h:outputText value="#{uzenet.idopont}">
