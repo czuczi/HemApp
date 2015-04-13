@@ -14,6 +14,7 @@ import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 import org.primefaces.context.RequestContext;
@@ -28,7 +29,7 @@ import org.primefaces.event.SelectEvent;
 @SessionScoped
 public class AdminController implements Serializable {
 
-    @EJB
+    @ManagedProperty("#{LoginController}")
     private LoginController loginController;
 
     @EJB
@@ -41,7 +42,6 @@ public class AdminController implements Serializable {
 
     private String felhNev = "";
     private String felhNevForChange = "";
-    private String felhNevForChangePW = "";
     private String jelszo = "";
     private String oldPassword = "";
     private String newPassword = "";
@@ -125,7 +125,7 @@ public class AdminController implements Serializable {
                 return;
             }
         }
-        
+
         adminFacade.remove(selectedAdmin);
         selectedAdmin.setFelhnev(felhNevForChange);
         selectedAdmin.setVezeteknev(vezeteknevForChange);
@@ -160,11 +160,11 @@ public class AdminController implements Serializable {
     }
 
     public void changePassword() {
-        Admin aktAdmin = adminFacade.getByFelhNev(felhNevForChangePW).get(0);
+        Admin aktAdmin = adminFacade.getByFelhNev(loginController.getFelhNev()).get(0);
         if (loginController.getMD5String(oldPassword).equals(aktAdmin.getJelszo())) {
             aktAdmin.setJelszo(loginController.getMD5String(newPassword));
             adminFacade.edit(aktAdmin);
-            felhNevForChangePW = oldPassword = newPassword = "";
+            oldPassword = newPassword = "";
             RequestContext.getCurrentInstance().update("passwordForm");
             FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "INFO", "Siker!");
             FacesContext.getCurrentInstance().addMessage(null, msg);
@@ -302,12 +302,12 @@ public class AdminController implements Serializable {
         this.telefonForChange = telefonForChange;
     }
 
-    public String getFelhNevForChangePW() {
-        return felhNevForChangePW;
+    public LoginController getLoginController() {
+        return loginController;
     }
 
-    public void setFelhNevForChangePW(String felhNevForChangePW) {
-        this.felhNevForChangePW = felhNevForChangePW;
+    public void setLoginController(LoginController loginController) {
+        this.loginController = loginController;
     }
 
 }
