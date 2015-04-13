@@ -113,6 +113,22 @@ public class BetegController implements Serializable {
                 return;
             }
         }
+        int tajCheck = 0;
+        for (int i = 0; i < taj.length() - 1; i++) {
+            if (i % 2 == 0) {
+                tajCheck += 3 * Character.getNumericValue(taj.charAt(i));
+            } else {
+                tajCheck += 7 * Character.getNumericValue(taj.charAt(i));
+            }
+        }
+
+        if (tajCheck % 10 != Character.getNumericValue(taj.charAt(taj.length() - 1))) {
+
+            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "WARNING", "A TAJ szám nem érvényes!");
+            FacesContext.getCurrentInstance().addMessage(null, msg);
+            return;
+        }
+
         Beteg newBeteg;
         if (!jelszo.equals("")) {
             newBeteg = new Beteg(felhNev, loginController.getMD5String(jelszo), vezeteknev, keresztnev, Integer.parseInt(taj));
@@ -156,6 +172,22 @@ public class BetegController implements Serializable {
         }
         if (selectedBeteg == null) {
             FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "WARNING", "Kérem válasszon beteget!");
+            FacesContext.getCurrentInstance().addMessage(null, msg);
+            return;
+        }
+
+        int tajCheck = 0;
+        for (int i = 0; i < taj.length() - 1; i++) {
+            if (i % 2 == 0) {
+                tajCheck += 3 * Character.getNumericValue(taj.charAt(i));
+            } else {
+                tajCheck += 7 * Character.getNumericValue(taj.charAt(i));
+            }
+        }
+
+        if (tajCheck % 10 != Character.getNumericValue(taj.charAt(taj.length() - 1))) {
+
+            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "WARNING", "A TAJ szám nem érvényes!");
             FacesContext.getCurrentInstance().addMessage(null, msg);
             return;
         }
