@@ -108,11 +108,7 @@ public class SingleBetegController implements Serializable {
 
             @Override
             public int compare(Injekciotortenet o1, Injekciotortenet o2) {
-                if (o1.getKezdetdatum().getTime() == o2.getKezdetdatum().getTime()) {
-                    return 0;
-                } else {
-                    return o1.getKezdetdatum().getTime() - o2.getKezdetdatum().getTime() > 0 ? 1 : -1;
-                }
+                return o2.getKezdetdatum().compareTo(o1.getKezdetdatum());
             }
 
         });

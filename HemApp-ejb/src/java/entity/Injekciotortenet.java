@@ -36,7 +36,7 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "Injekciotortenet.findByKezdetdatum", query = "SELECT i FROM Injekciotortenet i WHERE i.kezdetdatum = :kezdetdatum"),
     @NamedQuery(name = "Injekciotortenet.findByVegedatum", query = "SELECT i FROM Injekciotortenet i WHERE i.vegedatum = :vegedatum"),
     @NamedQuery(name = "Injekciotortenet.findByMennyiseg", query = "SELECT i FROM Injekciotortenet i WHERE i.mennyiseg = :mennyiseg"),
-    @NamedQuery(name = "Injekciotortenet.findActualByBeteg", query = "SELECT i FROM Injekciotortenet i WHERE i.betegID = :betegID AND i.vegedatum = NULL")})
+    @NamedQuery(name = "Injekciotortenet.findActualByBeteg", query = "SELECT i FROM Injekciotortenet i WHERE i.betegID = :betegID AND i.vegedatum IS NULL")})
 public class Injekciotortenet implements Serializable {
 
     private static final long serialVersionUID = 1L;

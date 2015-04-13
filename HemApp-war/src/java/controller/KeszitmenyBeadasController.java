@@ -67,11 +67,7 @@ public class KeszitmenyBeadasController implements Serializable {
 
             @Override
             public int compare(BeadottKeszKisz o1, BeadottKeszKisz o2) {
-                if (o1.getDatum().getTime() == o2.getDatum().getTime()) {
-                    return 0;
-                } else {
-                    return o2.getDatum().getTime() - o1.getDatum().getTime() > 0 ? 1 : -1;
-                }
+                return o2.getDatum().compareTo(o1.getDatum());
             }
 
         });
@@ -105,11 +101,7 @@ public class KeszitmenyBeadasController implements Serializable {
 
             @Override
             public int compare(BeadottKeszKisz o1, BeadottKeszKisz o2) {
-                if (o1.getDatum().getTime() == o2.getDatum().getTime()) {
-                    return 0;
-                } else {
-                    return o2.getDatum().getTime() - o1.getDatum().getTime() > 0 ? 1 : -1;
-                }
+                return o2.getDatum().compareTo(o1.getDatum());
             }
 
         });
