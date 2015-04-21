@@ -245,7 +245,7 @@ public class Beteg implements Serializable {
 
     @Override
     public String toString() {
-        return "entity.Beteg[ id=" + id + " ]";
+        return vezeteknev + " " + keresztnev + " " + String.format("%09d", taj);
     }
     
 }

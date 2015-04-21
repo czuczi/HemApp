@@ -40,7 +40,10 @@
                         <h:outputText value=" - "/>
                         <h:outputText value="#{kertKeszKisz.keszKiszID.kiszerelesID.NE} NE, "/>
                         <h:outputText value="#{kertKeszKisz.darab} db - " />
-                        <h:outputText value="#{kertKeszKisz.betegID.vezeteknev} #{kertKeszKisz.betegID.keresztnev} - #{kertKeszKisz.betegID.taj}" />
+                        <h:outputText value="#{kertKeszKisz.betegID.vezeteknev} #{kertKeszKisz.betegID.keresztnev} - " />
+                        <h:outputText value="#{kertKeszKisz.betegID.taj}">
+                            <f:convertNumber pattern="000 000 000"/>
+                        </h:outputText>
                         <f:facet name="footer">
                             Készítmény kérések
                         </f:facet>

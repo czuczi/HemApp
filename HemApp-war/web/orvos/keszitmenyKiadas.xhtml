@@ -32,7 +32,7 @@
                     <p:outputLabel for="selectBeteg" value="Beteg választása:" />
                     <p:selectOneMenu id="selectBeteg" value="#{KeszitmenyKiadasController.selectedBetegID}">
                         <p:ajax event="change" listener="#{KeszitmenyKiadasController.updateSelectedBeteg}" update=":page:tableForm"/>
-                        <f:selectItems value="#{KeszitmenyKiadasController.betegekForOrvos}" var="beteg" itemLabel="#{beteg.vezeteknev} #{beteg.keresztnev} #{beteg.taj}" itemValue="#{beteg.id}"/>
+                        <f:selectItems value="#{KeszitmenyKiadasController.betegekForOrvos}" var="beteg" itemLabel="#{beteg}" itemValue="#{beteg.id}"/>
                     </p:selectOneMenu>
                     <p:commandButton value="Készítmény kiadása" onclick="PF('kiadasDialogWidget').show();" />
                 </h:form>

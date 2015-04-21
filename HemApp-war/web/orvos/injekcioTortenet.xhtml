@@ -33,7 +33,7 @@
                         <p:outputLabel for="selectBeteg" value="Beteg választása:" />
                         <p:selectOneMenu id="selectBeteg" value="#{SingleOrvosController.selectedBetegID}">
                             <p:ajax event="change" listener="#{SingleOrvosController.updateSelectedBeteg}" update=":page:tableForm"/>
-                            <f:selectItems value="#{SingleOrvosController.betegekForOrvos}" var="beteg" itemLabel="#{beteg.vezeteknev} #{beteg.keresztnev} #{beteg.taj}" itemValue="#{beteg.id}"/>
+                            <f:selectItems value="#{SingleOrvosController.betegekForOrvos}" var="beteg" itemLabel="#{beteg}" itemValue="#{beteg.id}"/>
                         </p:selectOneMenu>
                     </pm:field>
                     <p:commandButton value="Injekció lecserélése" onclick="PF('editInjekciotortenetDialogWidget').show()" />
